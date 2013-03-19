@@ -11,7 +11,7 @@
 date_default_timezone_set('UTC');
 
 // -----------------------------------------------------------------------------------------------
-// Hardcoded parameter (These parameters can be overwritten by creating the file /config/options.php)
+// Hardcoded parameter (These parameters can be overwritten by creating the file /YourDataDir/options.php see next line)
 $GLOBALS['config']['DATADIR'] = 'data'; // Data subdirectory
 $GLOBALS['config']['CONFIG_FILE'] = $GLOBALS['config']['DATADIR'].'/config.php'; // Configuration file (user login/password)
 $GLOBALS['config']['DATASTORE'] = $GLOBALS['config']['DATADIR'].'/datastore.php'; // Data storage file.
@@ -29,6 +29,9 @@ $GLOBALS['config']['PUBSUBHUB_URL'] = ''; // PubSubHubbub support. Put an empty 
 $GLOBALS['config']['UPDATECHECK_FILENAME'] = $GLOBALS['config']['DATADIR'].'/lastupdatecheck.txt'; // For updates check of Shaarli.
 $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400 ; // Updates check frequency for Shaarli. 86400 seconds=24 hours
                                           // Note: You must have publisher.php in the same directory as Shaarli index.php
+$GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
+                                              // exemple : http://images.thumbshots.com/image.aspx?cid=dgdfgdfg&v=1&w=120&url=
+                                              // the last param must be a url
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
@@ -1863,7 +1866,9 @@ function computeThumbnail($url,$href=false)
     if ($domain=='imgur.com')
     {
         $path = parse_url($url,PHP_URL_PATH);
-        if (startsWith($path,'/a/')) return array(); // Thumbnails for albums are not available.
+        if (startsWith($path,'/a/') && empty($GLOBALS['config']['externalThumbshot'])){
+          return array(); // Thumbnails for albums are not available.
+        }
         if (startsWith($path,'/r/')) return array('src'=>'http://i.imgur.com/'.basename($path).'s.jpg',
                                                   'href'=>$href,'width'=>'90','height'=>'90','alt'=>'imgur.com thumbnail');
         if (startsWith($path,'/gallery/')) return array('src'=>'http://i.imgur.com'.substr($path,8).'s.jpg',
@@ -1896,6 +1901,11 @@ function computeThumbnail($url,$href=false)
             return array('src'=>$thumburl,
                          'href'=>$href,'width'=>'120','style'=>'height:auto;','alt'=>'imageshack.us thumbnail');
         }
+    }
+    if(!empty($GLOBALS['config']['externalThumbshot']) && $GLOBALS['config']['ENABLE_THUMBNAILS'] !== false)
+    {
+      $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
+      return array('src'=>$thumburl,'href'=>$href,'width'=>'120','style'=>'height:auto;','alt'=>'Custom Thumbshot');
     }
 
     // Some other hosts are SLOW AS HELL and usually require an extra HTTP request to get the thumbnail URL.

@@ -8,3 +8,4 @@ pagecache
 .settings
 .buildpath
 .project
+inc/user.css
