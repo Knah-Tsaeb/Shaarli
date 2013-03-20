@@ -1,0 +1,119 @@
+.thumbnail {
+  float: left;
+  margin: 0;
+  padding: 0.1em;
+  min-height: 96px;
+  min-width: 120px;
+}
+
+html {
+  background: -moz-linear-gradient(center top , #434343, #cdcdcd) no-repeat scroll 0 0 transparent;
+}
+
+body {
+  background-color: inherit;
+}
+
+.thumbnail img {
+  border-radius: 0.3em;
+}
+.linkcontainer {
+  position: static;
+  margin-left: 130px;
+}
+#linklist {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 0.3em;
+}
+#linklist li {
+  padding: 0.3em;
+  margin: 1em 0;
+  border: 1px solid #cdcdcd;
+  border-radius: 0.3em;
+  background: #fff;
+}
+
+#linklist li.publicLinkHightLight {
+  background: #fff;
+}
+
+.linktitle, .linkeditbuttons {
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.linkeditbuttons {
+  background-color: inherit;
+  border-radius: 0;
+  box-shadow: none;
+  float: right;
+  margin-right: 0.3em;
+  padding: 0;
+  position: relative;
+}
+
+.picwall_pictureframe img {
+    border-radius:0.1em;
+  }
+
+.picwall_pictureframe {
+  display: inline-block;
+  float: none;
+  height: auto;
+  min-height: 90px;
+  min-width: 120px;
+  padding: 0.3em;
+  text-align: center;
+  vertical-align: middle;
+  width: auto;
+}
+.picwall_container {
+  width: auto;
+  margin: 0 auto;
+  padding: 0 6em;
+  background-color: #000;
+}
+
+.picwall_pictureframe:hover span.info {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  font-weight: bold;
+  padding: 0.3em;
+  font-size: 8pt;
+  color: #fff;
+  text-align: center;
+  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 2px #000000;
+}
+
+.clearFix {
+ clear:both;
+ display: block;
+ min-width: 1px;
+ min-height: 1px;
+ margin:0;
+ height:0;
+}
+
+.paging {
+ border-radius:0.3em;
+}
+
+#footer {
+    border-top: none;
+    color: #555;
+}
+
+@media handheld, only screen and (max-width: 560px), only screen and (max-device-width: 854px)
+{
+  #linklist {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.3em;
+}
+}
