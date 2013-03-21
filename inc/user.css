@@ -1,17 +1,36 @@
-.thumbnail {
-  float: left;
-  margin: 0;
-  padding: 0.1em;
-  min-height: 96px;
-  min-width: 120px;
-}
-
 html {
   background: -moz-linear-gradient(center top , #434343, #cdcdcd) no-repeat scroll 0 0 transparent;
 }
 
 body {
   background-color: inherit;
+}
+
+a {
+  -moz-transition: all 100ms ease-in-out;
+  -ms-transition: all 100ms ease-in-out;
+  -o-transition: all 100ms ease-in-out;
+  -webkit-transition: all 100ms ease-in-out;
+  transition: all 100ms ease-in-out;
+  color: #E28E3F;
+}
+
+a:hover {
+  color: #F57900
+}
+
+pre code {
+  border-radius: 3px;
+  overflow-x: auto;
+  white-space: normal;
+}
+
+.thumbnail {
+  float: left;
+  margin: 0;
+  padding: 0.1em;
+  min-height: 96px;
+  min-width: 120px;
 }
 
 .thumbnail img {
