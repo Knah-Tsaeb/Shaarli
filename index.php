@@ -1234,11 +1234,13 @@ function renderPage()
         // We sort tags alphabetically, then choose a font size according to count.
         // First, find max value.
         $maxcount=0; foreach($tags as $key=>$value) $maxcount=max($maxcount,$value);
+        $linkCount = count($LINKSDB);
         ksort($tags);
         $tagList=array();
         foreach($tags as $key=>$value)
         {
-            $tagList[$key] = array('count'=>$value,'size'=>max(40*$value/$maxcount,8));
+            //$tagList[$key] = array('count'=>$value,'size'=>max(40*$value/$maxcount,8));
+            $tagList[$key] = array('count'=>$value,'size'=>round(min(max($maxcount*$value/$linkCount,0.8),4.5),2), 'max'=>$maxcount);
         }
         $PAGE = new pageBuilder;
         $PAGE->assign('linkcount',count($LINKSDB));
@@ -1936,7 +1938,7 @@ function computeThumbnail($url,$href=false)
             if ("/talks/" !== substr($path,0,7)) return array(); // This is not a single video URL.
         }
         $sign = hash_hmac('sha256', $url, $GLOBALS['salt']); // We use the salt to sign data (it's random, secret, and specific to each installation)
-        return array('src'=>indexUrl().'?do=genthumbnail&hmac='.htmlspecialchars($sign).'&url='.urlencode($url),
+        return array('src'=>indexUrl().'?do=genthumbnail&hmac='.htmlspecialchars($sign).'&url='.rawurlencode($url),
                      'href'=>$href,'width'=>'120','style'=>'height:auto;','alt'=>'thumbnail');
     }
 
