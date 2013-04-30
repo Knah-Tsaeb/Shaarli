@@ -438,6 +438,12 @@ if (isset($_POST['login']))
 // ------------------------------------------------------------------------------------------
 // Misc utility functions:
 
+// Try to get just domain for @via
+function getJustDomain($url){
+    $parts = parse_url($url);
+    return trim($parts['host']);
+    }
+
 // Returns the server URL (including port and http/https), without path.
 // eg. "http://myserver.com:8080"
 // You can append $_SERVER['SCRIPT_NAME'] to get the current script URL.
@@ -801,7 +807,8 @@ class linkdb implements Iterator, Countable, ArrayAccess
             $found=   (strpos(strtolower($l['title']),$s)!==false)
                    || (strpos(strtolower($l['description']),$s)!==false)
                    || (strpos(strtolower($l['url']),$s)!==false)
-                   || (strpos(strtolower($l['tags']),$s)!==false);
+                   || (strpos(strtolower($l['tags']),$s)!==false)
+                   || (strpos(strtolower($l['via']),$s)!==false);
             if ($found) $filtered[$l['linkdate']] = $l;
         }
         krsort($filtered);
@@ -941,7 +948,8 @@ function showRSS()
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = '(<a href="'.$absurl.'">Link</a>)';
         if (strlen($link['description'])>0) $descriptionlink = '<br>'.$descriptionlink;
-        echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$descriptionlink.']]></description>'."\n</item>\n";
+        $via = '<br>via '.text2clickable(htmlspecialchars($link['via']));
+        echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]></description>'."\n</item>\n";
         $i++;
     }
     echo '</channel></rss><!-- Cached version of '.pageUrl().' -->';
@@ -998,11 +1006,12 @@ function showATOM()
 
         // Add permalink in description
         $descriptionlink = htmlspecialchars('(<a href="'.$guid.'">Permalink</a>)');
+        $via = htmlspecialchars('</br> via '.(text2clickable(htmlspecialchars($link['via']))));
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = htmlspecialchars('(<a href="'.$absurl.'">Link</a>)');
         if (strlen($link['description'])>0) $descriptionlink = '&lt;br&gt;'.$descriptionlink;
 
-        $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink."</content>\n";
+        $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
         if ($link['tags']!='') // Adding tags to each ATOM entry (as mentioned in ATOM specification)
         {
             foreach(explode(' ',$link['tags']) as $tag)
@@ -1472,7 +1481,7 @@ function renderPage()
         if (!startsWith($url,'http:') && !startsWith($url,'https:') && !startsWith($url,'ftp:') && !startsWith($url,'magnet:') && !startsWith($url,'?'))
             $url = 'http://'.$url;
         $link = array('title'=>trim($_POST['lf_title']),'url'=>$url,'description'=>trim($_POST['lf_description']),'private'=>(isset($_POST['lf_private']) ? 1 : 0),
-                      'linkdate'=>$linkdate,'tags'=>str_replace(',',' ',$tags));
+                      'linkdate'=>$linkdate,'tags'=>str_replace(',',' ',$tags), 'via'=>trim($_POST['lf_via']));
         if ($link['title']=='') $link['title']=$link['url']; // If title is empty, use the URL as title.
         $LINKSDB[$linkdate] = $link;
         $LINKSDB->savedb(); // save to disk
@@ -1548,7 +1557,7 @@ function renderPage()
             $link_is_new = true;  // This is a new link
             $linkdate = strval(date('Ymd_His'));
             $title = (empty($_GET['title']) ? '' : $_GET['title'] ); // Get title if it was provided in URL (by the bookmarklet).
-            $description=''; $tags=''; $private=0;
+            $description=''; $tags=''; $private=0;$via = '';
             if (($url!='') && parse_url($url,PHP_URL_SCHEME)=='') $url = 'http://'.$url;
             // If this is an HTTP link, we try go get the page to extact the title (otherwise we will to straight to the edit form.)
             if (empty($title) && parse_url($url,PHP_URL_SCHEME)=='http')
@@ -1559,7 +1568,7 @@ function renderPage()
 
             }
             if ($url=='') $url='?'.smallHash($linkdate); // In case of empty URL, this is just a text (with a link that point to itself)
-            $link = array('linkdate'=>$linkdate,'title'=>$title,'url'=>$url,'description'=>$description,'tags'=>$tags,'private'=>0);
+            $link = array('linkdate'=>$linkdate,'title'=>$title,'url'=>$url,'description'=>$description,'tags'=>$tags,'via' => $via,'private'=>0);
         }
 
         $PAGE = new pageBuilder;
@@ -1805,6 +1814,9 @@ function buildLinkList($PAGE,$LINKSDB)
         $taglist = explode(' ',$link['tags']);
         uasort($taglist, 'strcasecmp');
         $link['taglist']=$taglist;
+        if(!empty($link['via'])){
+          $link['via']=nl2br(htmlspecialchars($link['via']));
+        }
         $linkDisp[$keys[$i]] = $link;
         $i++;
     }
