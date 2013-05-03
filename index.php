@@ -1815,7 +1815,7 @@ function buildLinkList($PAGE,$LINKSDB)
         uasort($taglist, 'strcasecmp');
         $link['taglist']=$taglist;
         if(!empty($link['via'])){
-          $link['via']=nl2br(htmlspecialchars($link['via']));
+          $link['via']=htmlspecialchars($link['via']);
         }
         $linkDisp[$keys[$i]] = $link;
         $i++;
