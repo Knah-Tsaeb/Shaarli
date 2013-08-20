@@ -948,7 +948,11 @@ function showRSS()
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = '(<a href="'.$absurl.'">Link</a>)';
         if (strlen($link['description'])>0) $descriptionlink = '<br>'.$descriptionlink;
-        $via = '<br>via '.text2clickable(htmlspecialchars($link['via']));
+        if(!empty($link['via'])){
+          $via = '<br>via '.text2clickable(htmlspecialchars($link['via']));
+        } else {
+         $via = '';
+        }
         echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]></description>'."\n</item>\n";
         $i++;
     }
@@ -1568,7 +1572,7 @@ function renderPage()
  					 {
                         // Look for charset in html header.
  						preg_match('#<meta .*charset=.*>#Usi', $data, $meta);
- 
+
  						// If found, extract encoding.
  						if (!empty($meta[0]))
  						{
@@ -1578,7 +1582,7 @@ function renderPage()
 							$html_charset = (!empty($enc[1])) ? strtolower($enc[1]) : 'utf-8';
  						}
  						else { $html_charset = 'utf-8'; }
- 
+
  						// Extract title
  						$title = html_extract_title($data);
  						if (!empty($title))
