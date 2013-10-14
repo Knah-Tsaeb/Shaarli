@@ -914,7 +914,7 @@ function showRSS()
     else $linksToDisplay = $LINKSDB;
     $nblinksToDisplay = 50;  // Number of links to display.
     if (!empty($_GET['nb']))  // In URL, you can specificy the number of links. Example: nb=200 or nb=all for all links.
-    { 
+    {
         $nblinksToDisplay = $_GET['nb']=='all' ? count($linksToDisplay) : max($_GET['nb']+0,1) ;
     }
 
@@ -994,7 +994,7 @@ function showATOM()
     else $linksToDisplay = $LINKSDB;
     $nblinksToDisplay = 50;  // Number of links to display.
     if (!empty($_GET['nb']))  // In URL, you can specificy the number of links. Example: nb=200 or nb=all for all links.
-    { 
+    {
         $nblinksToDisplay = $_GET['nb']=='all' ? count($linksToDisplay) : max($_GET['nb']+0,1) ;
     }
 
@@ -1964,6 +1964,9 @@ function computeThumbnail($url,$href=false)
     }
     if(!empty($GLOBALS['config']['externalThumbshot']) && $GLOBALS['config']['ENABLE_THUMBNAILS'] !== false)
     {
+      if(strlen($url) <= 7){
+      $url = serverUrl().'/'.$url;
+        }
       $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
       return array('src'=>$thumburl,'href'=>$href,'width'=>'120','style'=>'height:auto;','alt'=>'Custom Thumbshot');
     }
