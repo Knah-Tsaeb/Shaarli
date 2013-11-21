@@ -954,7 +954,7 @@ function showRSS()
         if ($usepermalinks===true) $descriptionlink = '(<a href="'.$absurl.'">Link</a>)';
         if (strlen($link['description'])>0) $descriptionlink = '<br>'.$descriptionlink;
         if(!empty($link['via'])){
-          $via = '<br>via '.text2clickable(htmlspecialchars($link['via']));
+          $via = '<br>Origine => <a href="'.htmlspecialchars($link['via']).'">'.htmlspecialchars(getJustDomain($link['via'])).'</a>';
         } else {
          $via = '';
         }
@@ -1020,7 +1020,11 @@ function showATOM()
 
         // Add permalink in description
         $descriptionlink = htmlspecialchars('(<a href="'.$guid.'">Permalink</a>)');
-        $via = htmlspecialchars('</br> via '.(text2clickable(htmlspecialchars($link['via']))));
+        if(isset($link['via']) && !empty($link['via'])){
+          $via = htmlspecialchars('</br> Origine => <a href="'.$link['via'].'">'.getJustDomain($link['via']).'</a>');
+        } else {
+          $via = '';
+        }
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = htmlspecialchars('(<a href="'.$absurl.'">Link</a>)');
         if (strlen($link['description'])>0) $descriptionlink = '&lt;br&gt;'.$descriptionlink;
