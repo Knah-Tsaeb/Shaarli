@@ -221,7 +221,7 @@ function nl2br_escaped($html)
     return str_replace('>','&gt;',str_replace('<','&lt;',nl2br($html)));
 }
 
-/* Returns the small hash of a string
+/* Returns the small hash of a string, using RFC 4648 base64url format
    eg. smallHash('20111006_131924') --> yZH23w
    Small hashes:
      - are unique (well, as unique as crc32, at last)
@@ -233,10 +233,7 @@ function nl2br_escaped($html)
 function smallHash($text)
 {
     $t = rtrim(base64_encode(hash('crc32',$text,true)),'=');
-    $t = str_replace('+','-',$t); // Get rid of characters which need encoding in URLs.
-    $t = str_replace('/','_',$t);
-    $t = str_replace('=','@',$t);
-    return $t;
+    return strtr($t, '+/', '-_');
 }
 
 // In a string, converts urls to clickable links.
@@ -431,6 +428,12 @@ if (isset($_POST['login']))
 
 // ------------------------------------------------------------------------------------------
 // Misc utility functions:
+
+// Try to get just domain for @via
+function getJustDomain($url){
+    $parts = parse_url($url);
+    return trim($parts['host']);
+    }
 
 // Returns the server URL (including port and http/https), without path.
 // eg. "http://myserver.com:8080"
@@ -794,7 +797,8 @@ class linkdb implements Iterator, Countable, ArrayAccess
             $found=   (strpos(strtolower($l['title']),$s)!==false)
                    || (strpos(strtolower($l['description']),$s)!==false)
                    || (strpos(strtolower($l['url']),$s)!==false)
-                   || (strpos(strtolower($l['tags']),$s)!==false);
+                   || (strpos(strtolower($l['tags']),$s)!==false)
+                   || (strpos(strtolower($l['via']),$s)!==false);
             if ($found) $filtered[$l['linkdate']] = $l;
         }
         krsort($filtered);
@@ -939,10 +943,15 @@ function showRSS()
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = '(<a href="'.$absurl.'">Link</a>)';
         if (strlen($link['description'])>0) $descriptionlink = '<br>'.$descriptionlink;
-        echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$descriptionlink.']]></description>'."\n</item>\n";
+        if(!empty($link['via'])){
+          $via = '<br>Origine => <a href="'.htmlspecialchars($link['via']).'">'.htmlspecialchars(getJustDomain($link['via'])).'</a>';
+        } else {
+         $via = '';
+        }
+        echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]></description>'."\n</item>\n";
         $i++;
     }
-    echo '</channel></rss><!-- Cached version of '.pageUrl().' -->';
+    echo '</channel></rss><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
 
     $cache->cache(ob_get_contents());
     ob_end_flush();
@@ -1001,11 +1010,16 @@ function showATOM()
 
         // Add permalink in description
         $descriptionlink = htmlspecialchars('(<a href="'.$guid.'">Permalink</a>)');
+        if(isset($link['via']) && !empty($link['via'])){
+          $via = htmlspecialchars('</br> Origine => <a href="'.$link['via'].'">'.getJustDomain($link['via']).'</a>');
+        } else {
+          $via = '';
+        }
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = htmlspecialchars('(<a href="'.$absurl.'">Link</a>)');
         if (strlen($link['description'])>0) $descriptionlink = '&lt;br&gt;'.$descriptionlink;
 
-        $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink."</content>\n";
+        $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
         if ($link['tags']!='') // Adding tags to each ATOM entry (as mentioned in ATOM specification)
         {
             foreach(explode(' ',$link['tags']) as $tag)
@@ -1027,7 +1041,7 @@ function showATOM()
     $feed.='<author><name>'.htmlspecialchars($pageaddr).'</name><uri>'.htmlspecialchars($pageaddr).'</uri></author>';
     $feed.='<id>'.htmlspecialchars($pageaddr).'</id>'."\n\n"; // Yes, I know I should use a real IRI (RFC3987), but the site URL will do.
     $feed.=$entries;
-    $feed.='</feed><!-- Cached version of '.pageUrl().' -->';
+    $feed.='</feed><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
     echo $feed;
 
     $cache->cache(ob_get_contents());
@@ -1104,7 +1118,7 @@ function showDailyRSS()
         echo '<description><![CDATA['.$html.']]></description>'."\n</item>\n\n";
 
     }
-    echo '</channel></rss><!-- Cached version of '.pageUrl().' -->';
+    echo '</channel></rss><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
 
     $cache->cache(ob_get_contents());
     ob_end_flush();
@@ -1472,7 +1486,7 @@ function renderPage()
         if (!startsWith($url,'http:') && !startsWith($url,'https:') && !startsWith($url,'ftp:') && !startsWith($url,'magnet:') && !startsWith($url,'?'))
             $url = 'http://'.$url;
         $link = array('title'=>trim($_POST['lf_title']),'url'=>$url,'description'=>trim($_POST['lf_description']),'private'=>(isset($_POST['lf_private']) ? 1 : 0),
-                      'linkdate'=>$linkdate,'tags'=>str_replace(',',' ',$tags));
+                      'linkdate'=>$linkdate,'tags'=>str_replace(',',' ',$tags), 'via'=>trim($_POST['lf_via']));
         if ($link['title']=='') $link['title']=$link['url']; // If title is empty, use the URL as title.
         $LINKSDB[$linkdate] = $link;
         $LINKSDB->savedb(); // save to disk
@@ -1548,9 +1562,10 @@ function renderPage()
             $link_is_new = true;  // This is a new link
             $linkdate = strval(date('Ymd_His'));
             $title = (empty($_GET['title']) ? '' : $_GET['title'] ); // Get title if it was provided in URL (by the bookmarklet).
-            $description = (empty($_GET['description']) ? '' : $_GET['description'] )."\n"; // Get description if it was provided in URL (by the bookmarklet). [Bronco added that]
+            $description = (empty($_GET['description']) ? '' : $_GET['description']); // Get description if it was provided in URL (by the bookmarklet). [Bronco added that]
             $tags = (empty($_GET['tags']) ? '' : $_GET['tags'] ); // Get tags if it was provided in URL
-            $private = (!empty($_GET['private']) && $_GET['private'] === "1" ? 1 : 0); // Get private if it was provided in URL 
+            $via = (empty($_GET['via']) ? '' : $_GET['via'] );
+            $private = (!empty($_GET['private']) && $_GET['private'] === "1" ? 1 : 0); // Get private if it was provided in URL
             if (($url!='') && parse_url($url,PHP_URL_SCHEME)=='') $url = 'http://'.$url;
             // If this is an HTTP link, we try go get the page to extact the title (otherwise we will to straight to the edit form.)
             if (empty($title) && parse_url($url,PHP_URL_SCHEME)=='http')
@@ -1582,7 +1597,7 @@ function renderPage()
  					}
             }
             if ($url=='') $url='?'.smallHash($linkdate); // In case of empty URL, this is just a text (with a link that point to itself)
-            $link = array('linkdate'=>$linkdate,'title'=>$title,'url'=>$url,'description'=>$description,'tags'=>$tags,'private'=>$private);
+            $link = array('linkdate'=>$linkdate,'title'=>$title,'url'=>$url,'description'=>$description,'tags'=>$tags,'via' => $via,'private'=>$private);
         }
 
         $PAGE = new pageBuilder;
@@ -1747,11 +1762,11 @@ function importFile()
         }
         $LINKSDB->savedb();
 
-        echo '<script language="JavaScript">alert("File '.$filename.' ('.$filesize.' bytes) was successfully processed: '.$import_count.' links imported.");document.location=\'?\';</script>';
+        echo '<script language="JavaScript">alert("File '.json_encode($filename).' ('.$filesize.' bytes) was successfully processed: '.$import_count.' links imported.");document.location=\'?\';</script>';
     }
     else
     {
-        echo '<script language="JavaScript">alert("File '.$filename.' ('.$filesize.' bytes) has an unknown file format. Nothing was imported.");document.location=\'?\';</script>';
+        echo '<script language="JavaScript">alert("File '.json_encode($filename).' ('.$filesize.' bytes) has an unknown file format. Nothing was imported.");document.location=\'?\';</script>';
     }
 }
 
@@ -1832,6 +1847,9 @@ function buildLinkList($PAGE,$LINKSDB)
         $taglist = explode(' ',$link['tags']);
         uasort($taglist, 'strcasecmp');
         $link['taglist']=$taglist;
+        if(!empty($link['via'])){
+          $link['via']=htmlspecialchars($link['via']);
+        }
         $linkDisp[$keys[$i]] = $link;
         $i++;
     }
