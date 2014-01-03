@@ -805,7 +805,7 @@ class linkdb implements Iterator, Countable, ArrayAccess
                    || (strpos(strtolower($l['description']),$s)!==false)
                    || (strpos(strtolower($l['url']),$s)!==false)
                    || (strpos(strtolower($l['tags']),$s)!==false)
-                   || (strpos(strtolower($l['via']),$s)!==false);
+                   || (!empty($l['via']) && (strpos(strtolower($l['via']),$s)!==false));
             if ($found) $filtered[$l['linkdate']] = $l;
         }
         krsort($filtered);
