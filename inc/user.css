@@ -1,12 +1,12 @@
 html {
-background: #434343; /* Old browsers */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#434343), color-stop(100%,#cdcdcd)) no-repeat scroll 0 0 transparent;; /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* Opera 11.10+ */
-background: -ms-linear-gradient(top, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* IE10+ */
-background: linear-gradient(to bottom, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#434343', endColorstr='#cdcdcd',GradientType=0 ); /* IE6-9 */
-background: -moz-linear-gradient(center top , #434343, #cdcdcd) no-repeat scroll 0 0 transparent;
+  background: #434343; /* Old browsers */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#434343), color-stop(100%,#cdcdcd)) no-repeat scroll 0 0 transparent;; /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* IE10+ */
+  background: linear-gradient(to bottom, #434343 0%,#cdcdcd 100%) no-repeat scroll 0 0 transparent;; /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#434343', endColorstr='#cdcdcd',GradientType=0 ); /* IE6-9 */
+  background: -moz-linear-gradient(center top , #434343, #cdcdcd) no-repeat scroll 0 0 transparent;
 }
 
 body {
@@ -42,7 +42,7 @@ pre code {
 
 .thumbnail img {
   border-radius: 0.3em;
-  background-color:#fff;
+  background-color: #fff;
 }
 .linkcontainer {
   position: static;
@@ -80,10 +80,15 @@ pre code {
   position: relative;
 }
 
+#linklist li.private .linkeditbuttons {
+  background: url('../images/private.png') no-repeat 10px center;
+  padding: 0 0 0 55px;
+}
+
 .picwall_pictureframe img {
-    border-radius:0.1em;
-      background-color:#fff;
-  }
+  border-radius: 0.1em;
+  background-color: #fff;
+}
 
 .picwall_pictureframe {
   display: inline-block;
@@ -120,51 +125,50 @@ pre code {
 }
 
 .clearFix {
- clear:both;
- display: block;
- min-width: 1px;
- min-height: 1px;
- margin:0;
- height:0;
+  clear: both;
+  display: block;
+  min-width: 1px;
+  min-height: 1px;
+  margin: 0;
+  height: 0;
 }
 
 .paging {
- border-radius:0.3em;
+  border-radius: 0.3em;
 }
 
 #footer {
-    border-top: none;
-    color: #555;
+  border-top: none;
+  color: #555;
 }
 
 #cloudtag {
- background-color: #ababab;
- border-radius:0.3em;
+  background-color: #ababab;
+  border-radius: 0.3em;
 }
 
 #cloudtag > span {
-    padding: 0 0.3em;
-    color:#fff;
-    font-size:0.9em;
+  padding: 0 0.3em;
+  color: #fff;
+  font-size: 0.9em;
 }
 
 #cloudtag a {
-   font-weight:bold;
-   color:black;
-   text-decoration:none
+  font-weight: bold;
+  color: black;
+  text-decoration: none
 }
 
 #cloudtag a:hover {
-   font-weight:bold;
-   color:#ffffc9;
-   text-decoration:none
+  font-weight: bold;
+  color: #ffffc9;
+  text-decoration: none
 }
 
-@media handheld, only screen and (max-width: 560px), only screen and (max-device-width: 854px)
-{
+@media handheld, only screen and (max-width: 560px) , only screen and (max-device-width: 854px) {
   #linklist {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0.3em;
-}
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0.3em;
+  }
 }
