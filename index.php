@@ -32,6 +32,11 @@ $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400 ; // Updates check frequency 
 $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // exemple : http://images.thumbshots.com/image.aspx?cid=dgdfgdfg&v=1&w=120&url=
                                               // the last param must be a url
+$GLOBALS['config']['extensionThumbshot'] = 'png'; // Extension return by externalThumbshot
+                                                  // exemple : png, jpeg, gif
+$GLOBALS['config']['ignoreThumbshot'] = array(); // Array of ignore sha1(image_content)
+                                              // exemple : cat default_return_image.png  | sha1sum
+                                              // return 980ea8690eeb1349e3f2a11f79775b6c6dd7ec55
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
@@ -350,7 +355,7 @@ function isLoggedIn()
 }
 
 // Force logout.
-function logout() { if (isset($_SESSION)) { unset($_SESSION['uid']); unset($_SESSION['ip']); unset($_SESSION['username']); unset($_SESSION['privateonly']); }  
+function logout() { if (isset($_SESSION)) { unset($_SESSION['uid']); unset($_SESSION['ip']); unset($_SESSION['username']); unset($_SESSION['privateonly']); }
 setcookie('shaarli_staySignedIn', FALSE, 0, WEB_PATH);
 }
 
@@ -1985,7 +1990,28 @@ function computeThumbnail($url,$href=false)
       if(strlen($url) <= 7){
       $url = serverUrl().'/'.$url;
         }
-      $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
+        if ($GLOBALS['config']['ENABLE_LOCALCACHE'] === true){
+          $thumbname=hash('sha1',$url).'.'.$GLOBALS['config']['extensionThumbshot'];
+          $subDir = substr($thumbname, 0, 2);
+          if (is_file($GLOBALS['config']['CACHEDIR'].'/'.$subDir.'/'.$thumbname)){   // We have the thumbnail, just serve it:
+            $thumburl = 'data:image/'.$GLOBALS['config']['extensionThumbshot'].';base64,'.base64_encode(file_get_contents($GLOBALS['config']['CACHEDIR'].'/'.$subDir.'/'.$thumbname));
+          } else {
+            list($httpstatus,$headers,$data) = getHTTP($GLOBALS['config']['externalThumbshot'].urlencode($url),10);
+            if (strpos($httpstatus,'200 OK')!==false){
+              if(!in_array(sha1($data),$GLOBALS['config']['ignoreThumbshot'])){
+                if(!is_dir($GLOBALS['config']['CACHEDIR'].'/'.$subDir.'/')){
+                  mkdir($GLOBALS['config']['CACHEDIR'].'/'.$subDir.'/',0755);
+                }
+                file_put_contents($GLOBALS['config']['CACHEDIR'].'/'.$subDir.'/'.$thumbname,$data); // Save image to cache and serve it
+                $thumburl = 'data:image/'.$GLOBALS['config']['extensionThumbshot'].';base64,'.base64_encode($data);
+              } else {
+                $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
+              }
+            }
+          }
+        } else {
+          $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
+        }
       return array('src'=>$thumburl,'href'=>$href,'width'=>'120','style'=>'height:auto;','alt'=>'Custom Thumbshot');
     }
 
@@ -2537,7 +2563,7 @@ function invalidateCaches()
     unset($_SESSION['tags']);  // Purge cache attached to session.
     pageCache::purgeCache();   // Purge page cache shared by sessions.
 }
-
+if (isset($_SERVER["QUERY_STRING"]) && startswith($_SERVER["QUERY_STRING"],'do=servethumbnail')) { serveThumbnail(); exit; }
 if (isset($_SERVER["QUERY_STRING"]) && startswith($_SERVER["QUERY_STRING"],'do=genthumbnail')) { genThumbnail(); exit; }  // Thumbnail generation/cache does not need the link database.
 if (isset($_SERVER["QUERY_STRING"]) && startswith($_SERVER["QUERY_STRING"],'do=rss')) { showRSS(); exit; }
 if (isset($_SERVER["QUERY_STRING"]) && startswith($_SERVER["QUERY_STRING"],'do=atom')) { showATOM(); exit; }
