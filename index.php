@@ -2008,6 +2008,7 @@ function computeThumbnail($url,$href=false)
                 $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
               }
             }
+          $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
           }
         } else {
           $thumburl = $GLOBALS['config']['externalThumbshot'].urlencode($url);
