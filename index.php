@@ -22,9 +22,11 @@ $GLOBALS['config']['BAN_DURATION'] = 1800;  // Ban duration for IP address after
 $GLOBALS['config']['OPEN_SHAARLI'] = false; // If true, anyone can add/edit/delete links without having to login
 $GLOBALS['config']['HIDE_TIMESTAMPS'] = false; // If true, the moment when links were saved are not shown to users that are not logged in.
 $GLOBALS['config']['ENABLE_THUMBNAILS'] = true; // Enable thumbnails in links.
+$GLOBALS['config']['ENABLE_FAVICON'] = true; // Enable favicon in links.
 $GLOBALS['config']['CACHEDIR'] = 'cache'; // Cache directory for thumbnails for SLOW services (like flickr)
 $GLOBALS['config']['PAGECACHE'] = 'pagecache'; // Page cache directory.
 $GLOBALS['config']['ENABLE_LOCALCACHE'] = true; // Enable Shaarli to store thumbnail in a local cache. Disable to reduce webspace usage.
+                                                // Care if favicon is active and local cache are false serve page can be long
 $GLOBALS['config']['PUBSUBHUB_URL'] = ''; // PubSubHubbub support. Put an empty string to disable, or put your hub url here to enable.
 $GLOBALS['config']['UPDATECHECK_FILENAME'] = $GLOBALS['config']['DATADIR'].'/lastupdatecheck.txt'; // For updates check of Shaarli.
 $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400 ; // Updates check frequency for Shaarli. 86400 seconds=24 hours
@@ -344,7 +346,7 @@ function isLoggedIn()
 }
 
 // Force logout.
-function logout() { if (isset($_SESSION)) { unset($_SESSION['uid']); unset($_SESSION['ip']); unset($_SESSION['username']); unset($_SESSION['privateonly']); }  
+function logout() { if (isset($_SESSION)) { unset($_SESSION['uid']); unset($_SESSION['ip']); unset($_SESSION['username']); unset($_SESSION['privateonly']); }
 setcookie('shaarli_staySignedIn', FALSE, 0, WEB_PATH);
 }
 
@@ -913,7 +915,7 @@ function showRSS()
     else $linksToDisplay = $LINKSDB;
     $nblinksToDisplay = 50;  // Number of links to display.
     if (!empty($_GET['nb']))  // In URL, you can specificy the number of links. Example: nb=200 or nb=all for all links.
-    { 
+    {
         $nblinksToDisplay = $_GET['nb']=='all' ? count($linksToDisplay) : max($_GET['nb']+0,1) ;
     }
 
@@ -988,7 +990,7 @@ function showATOM()
     else $linksToDisplay = $LINKSDB;
     $nblinksToDisplay = 50;  // Number of links to display.
     if (!empty($_GET['nb']))  // In URL, you can specificy the number of links. Example: nb=200 or nb=all for all links.
-    { 
+    {
         $nblinksToDisplay = $_GET['nb']=='all' ? count($linksToDisplay) : max($_GET['nb']+0,1) ;
     }
 
@@ -1563,7 +1565,7 @@ function renderPage()
             $title = (empty($_GET['title']) ? '' : $_GET['title'] ); // Get title if it was provided in URL (by the bookmarklet).
             $description = (empty($_GET['description']) ? '' : $_GET['description']); // Get description if it was provided in URL (by the bookmarklet). [Bronco added that]
             $tags = (empty($_GET['tags']) ? '' : $_GET['tags'] ); // Get tags if it was provided in URL
-            $private = (!empty($_GET['private']) && $_GET['private'] === "1" ? 1 : 0); // Get private if it was provided in URL 
+            $private = (!empty($_GET['private']) && $_GET['private'] === "1" ? 1 : 0); // Get private if it was provided in URL
             if (($url!='') && parse_url($url,PHP_URL_SCHEME)=='') $url = 'http://'.$url;
             // If this is an HTTP link, we try go get the page to extact the title (otherwise we will to straight to the edit form.)
             if (empty($title) && parse_url($url,PHP_URL_SCHEME)=='http')
@@ -1574,7 +1576,7 @@ function renderPage()
  					 {
                         // Look for charset in html header.
  						preg_match('#<meta .*charset=.*>#Usi', $data, $meta);
- 
+
  						// If found, extract encoding.
  						if (!empty($meta[0]))
  						{
@@ -1584,7 +1586,7 @@ function renderPage()
 							$html_charset = (!empty($enc[1])) ? strtolower($enc[1]) : 'utf-8';
  						}
  						else { $html_charset = 'utf-8'; }
- 
+
  						// Extract title
  						$title = html_extract_title($data);
  						if (!empty($title))
@@ -2052,6 +2054,42 @@ function lazyThumbnail($url,$href=false)
     return $html;
 }
 
+function returnFavicon($url){
+  if(!$GLOBALS['config']['ENABLE_FAVICON']){
+    return;
+  }
+  $faviconHash = md5($url);
+  $path = substr($faviconHash, 0,2).'/'.substr($faviconHash, 2,2);
+  $faviconPath = $GLOBALS['config']['CACHEDIR'].'/'.$path.'/'.$faviconHash.'.ico';
+  if($GLOBALS['config']['ENABLE_LOCALCACHE'] === true && file_exists($faviconPath)){
+    $content = file_get_contents($faviconPath);
+    return '<img class="favicon" alt="favicon" src="data:image/ico;base64,'.base64_encode($content).'"/>';
+  }
+  if(file_exists($GLOBALS['config']['CACHEDIR'].'/'.$path.'/'.$faviconHash)){
+    return;
+  }
+  require_once 'inc/DataAccess.php';
+  require_once 'inc/Favicon.php';
+  $favicon = new \Favicon\Favicon();
+  $urlOfFavicon = $favicon->get($url);
+  if(!$urlOfFavicon){
+    if($GLOBALS['config']['ENABLE_LOCALCACHE'] === true){
+      mkdir($GLOBALS['config']['CACHEDIR'].'/'.$path,0777,true);
+      touch($GLOBALS['config']['CACHEDIR'].'/'.$path.'/'.$faviconHash);
+      return;
+    } else {
+      return;
+    }
+  }
+  if($GLOBALS['config']['ENABLE_LOCALCACHE'] === true && !is_dir($GLOBALS['config']['CACHEDIR'].'/'.$path.'/')){
+    mkdir($GLOBALS['config']['CACHEDIR'].'/'.$path,0777,true);
+  }
+  $content = file_get_contents($urlOfFavicon);
+  if($GLOBALS['config']['ENABLE_LOCALCACHE'] === true){
+    file_put_contents($faviconPath, $content);
+  }
+  return '<img  class="favicon" alt="favicon" src="data:image/ico;base64,'.base64_encode($content).'"/>';
+}
 
 // -----------------------------------------------------------------------------------------------
 // Installation
