@@ -2112,6 +2112,7 @@ function returnFavicon($url){
   require_once 'inc/DataAccess.php';
   require_once 'inc/Favicon.php';
   $favicon = new \Favicon\Favicon();
+  $favicon->cache(array('dir'=>'cache'));
   $urlOfFavicon = $favicon->get($url);
   if(!$urlOfFavicon){
     if($GLOBALS['config']['ENABLE_LOCALCACHE'] === true){
