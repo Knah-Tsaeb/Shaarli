@@ -12,7 +12,7 @@
 	    <tr><td><b>Page title:</b></td><td><input type="text" name="title" id="title" size="50" value="{$title}"></td></tr>
 
 	    <tr><td><b>Title link:</b></td><td><input type="text" name="titleLink" id="titleLink" size="50" value="{$titleLink}"></td></tr>
-	    
+
 	    <tr><td valign="top"><b>Timezone:</b></td><td valign="top">{$timezone_form}</td></tr>
 
 	    <tr><td valign="top"><b>Redirector</b></td><td><input type="text" name="redirector" id="redirector" size="50" value="{$redirector}"><br>(e.g. <i>http://anonym.to/?</i> will mask the HTTP_REFERER)</td></tr>
@@ -24,6 +24,10 @@
         </td></tr>
         <tr><td valign="top"><b>New link:</b></td><td>
         	<input type="checkbox" name="privateLinkByDefault" id="privateLinkByDefault" {if="!empty($GLOBALS['privateLinkByDefault'])"}checked{/if}/><label for="privateLinkByDefault">&nbsp;All new link are private by default</label></td>
+        </tr>
+        <tr><td valign="top"><b>Update:</b></td><td>
+          <input type="checkbox" name="updateCheck" id="updateCheck" {if="!empty($GLOBALS['config']['ENABLE_UPDATECHECK'])"}checked{/if}/>
+          <label for="updateCheck">&nbsp;Notify me when a new release is ready</label></td>
         </tr>
 	  <tr><td></td><td align="right"><input type="submit" name="Save" value="Save config" class="bigbutton"></td></tr>
 	</table>
