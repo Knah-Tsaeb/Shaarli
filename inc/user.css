@@ -1,7 +1,9 @@
 html {
   overflow-y: scroll;
-  background: #434343; /* Old browsers */
-  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#434343), color-stop(100%,#cdcdcd) )no-repeat scroll 0 0 transparent;/* Chrome,Safari4+ */
+  background: #434343;
+ /* Old browsers */
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#434343), color-stop(100%,#cdcdcd) )no-repeat scroll 0 0 transparent;
+/* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top,#434343 0,#cdcdcd 100%) no-repeat scroll 0 0 transparent;
   background: -o-linear-gradient(top,#434343 0,#cdcdcd 100%) no-repeat scroll 0 0 transparent;
   background: -ms-linear-gradient(top,#434343 0,#cdcdcd 100%) no-repeat scroll 0 0 transparent;
@@ -192,72 +194,75 @@ pre code {
 
 .searchform,
 .tagfilter {
-display :inline-block;
-text-align : left;
-margin : 0;
-padding: 0.3em;
-    display: inline-flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    align-items: flex-start;
+  display: inline-block;
+  text-align: left;
+  margin: 0;
+  padding: 0.3em;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
 }
 
 .searchform input:nth-child(1),
-.tagfilter input:nth-child(1){
-    order: 1;
-    flex: 1 0 auto;
-    align-self: stretch;
-    }
+.tagfilter input:nth-child(1) {
+  order: 1;
+  flex: 1 0 auto;
+  align-self: stretch;
+}
 
 .searchform input:nth-child(2),
 .tagfilter input:nth-child(2) {
-    order: 2;
-    flex: 0 0 20%;
-    align-self: stretch;
-    }
-
+  order: 2;
+  flex: 0 0 20%;
+  align-self: stretch;
+}
 
 .searchform {
   width: 70%;
-
 }
 
 .tagfilter {
   width: 30%;
-  margin-left : 0.3em
+  margin-left: 0.3em;
 }
 
 .tagfilter input.bigbutton,
 .searchform input.bigbutton,
 .addform input.bigbutton {
-  height : auto;
-  margin :0;
-  padding : 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
 }
 
-
 #pageheader #logo {
-  height : 50px;
+  height: 50px;
+}
+
+#pageheader {
+  padding: 0 0 5px;
+}
+
+#linkcount {
+  float: right;
+  font-style: italic;
+  color: #bbb;
+  text-align: right;
+  padding: 0.5em;
 }
 
 #headerform {
-  max-width:80%;
-  margin:auto;
-  white-space:nowrap;
-  text-align:center;
+  max-width: 80%;
+  margin: auto;
+  white-space: nowrap;
+  text-align: center;
   display: flex;
 }
 
-@media handheld,
-only screen and (max-width:560px) ,
-only screen and (max-device-width:854px) {
-  #linklist {
-    margin: 0 auto;
-    padding: 0.3em;
-    max-width: 100%;
-  }
+.linkList {
+  padding: 0;
 }
 
 p {
@@ -422,6 +427,138 @@ em {
   font-style: italic;
 }
 
+@media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 854px) {
+/* A few fixes for mobile devices (far from perfect). */
+  .nomobile {
+    display: none;
+  }
+
+  #logo {
+    display: none;
+  }
+
+  #pageheader a {
+    padding: 5px;
+    border-radius: 5px 5px 5px 5px;
+    margin: 3px;
+  }
+
+  #headerform {
+    width: 100%;
+    max-width: 100%;
+    display : block;
+  }
+
+  .searchform,.tagfilter {
+    display: block !important;
+    margin: 0px !important;
+    padding: 0px !important;
+    width: 100% !important;
+    height : 2em;
+  }
+
+  .searchform input,.tagfilter input {
+    height : 2em;
+    padding 0.1em;
+  }
+
+  .tagfilter input.bigbutton,.searchform input.bigbutton,.addform input.bigbutton {
+    width: 30%;
+    font-size: smaller;
+    height : 2em;
+  }
+
+  #searchform_value {
+    width: 70% !important;
+  }
+
+  #tagfilter_value {
+    width: 70% !important;
+  }
+
+  div.qrcode {
+    position: relative;
+    float: left;
+    top: -10px;
+    left: 0px;
+  }
+
+  #paging_privatelinks {
+    float;none;
+  }
+
+  #paging_linksperpage {
+    float: none;
+    margin-bottom: 10px;
+    font-size: smaller;
+  }
+
+  #paging_older,#paging_newer,#paging_linksperpage a {
+    border: 1px solid black;
+    padding: 3px 5px 3px 5px;
+    background-color: #666;
+    color: #fff;
+    border-radius: 5px 5px 5px 5px;
+  }
+
+  .thumbnail {
+    float: none;
+    height: auto;
+    margin: 0px;
+    text-align: center;
+  }
+
+  #cloudtag {
+    padding: 0px;
+  }
+
+  div.dailyAbout {
+    float: none;
+    position: relative;
+    width: 100%;
+    clear: both;
+    padding: 0px;
+    top: 0px;
+    left: 0px;
+  }
+
+  #daily_col1,#daily_col2,#daily_col3 {
+    float: none;
+    width: 100%;
+    padding: 0px;
+  }
+
+  div.dailyTitle {
+    font-size: 18pt;
+    margin-top: 5px;
+    padding: 0px;
+  }
+
+  div.dailyDate {
+    font-size: 11pt;
+    padding: 0px;
+    display: block;
+  }
+
+  div.dailyEntryTitle {
+    font-size: 16pt;
+    font-weight: bold;
+  }
+
+  div.dailyEntryDescription {
+    font-size: 10pt;
+  }
+
+  #linklist {
+    margin: 0 auto;
+    padding: 0.3em;
+    max-width: 100%;
+  }
+  .linkcontainer {
+    margin : 0;
+  }
+}
+
 @media print {
   * {
     color: black !important;
@@ -476,11 +613,11 @@ em {
     max-width: 100% !important;
   }
 
-  @page:left {
+  @  page:left {
     margin: 15mm 20mm 15mm 10mm;
   }
 
-  @page:right {
+  @  page:right {
     margin: 15mm 10mm 15mm 20mm;
   }
 
@@ -494,5 +631,5 @@ em {
   h2,
   h3 {
     page-break-after: avoid;
-  }
+  };
 }
