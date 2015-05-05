@@ -66,7 +66,7 @@ ini_set('upload_max_filesize', '16M');
 checkphpversion();
 error_reporting(E_ALL^E_WARNING);  // See all error except warnings.
 //error_reporting(-1); // See all errors (for debugging only)
-
+include 'inc/Parsedown.php';
 include "inc/rain.tpl.class.php"; //include Rain TPL
 raintpl::$tpl_dir = "tpl/"; // template directory
 if (!is_dir('tmp')) { mkdir('tmp',0705); chmod('tmp',0705); }
@@ -967,13 +967,19 @@ function showRSS()
         $descriptionlink = '(<a href="'.$guid.'">Permalink</a>)';
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = '(<a href="'.$absurl.'">Link</a>)';
-        if (strlen($link['description'])>0) $descriptionlink = '<br>'.$descriptionlink;
+        if (strlen($link['description'])>0){
+          $descriptionlink = '<br>'.$descriptionlink;
+        }
         if(!empty($link['via'])){
           $via = '<br>Origine => <a href="'.htmlspecialchars($link['via']).'">'.htmlspecialchars(getJustDomain($link['via'])).'</a>';
         } else {
          $via = '';
         }
-        echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]></description>'."\n</item>\n";
+        $Parsedown = new Parsedown();
+        echo '<description><![CDATA['.$Parsedown->setMarkupEscaped(true)->text($link['description']).$via.$descriptionlink.']]>
+        </description>'."\n</item>\n";
+        /*echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]>
+        </description>'."\n</item>\n";*/
         $i++;
     }
     echo '</channel></rss><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
@@ -1031,7 +1037,9 @@ function showATOM()
             $entries.='<link href="'.$guid.'" /><id>'.$guid.'</id>';
         else
             $entries.='<link href="'.$absurl.'" /><id>'.$guid.'</id>';
-        if (!$GLOBALS['config']['HIDE_TIMESTAMPS'] || isLoggedIn()) $entries.='<updated>'.htmlspecialchars($iso8601date).'</updated>';
+        if (!$GLOBALS['config']['HIDE_TIMESTAMPS'] || isLoggedIn()) {
+          $entries.='<updated>'.htmlspecialchars($iso8601date).'</updated>';
+        }
 
         // Add permalink in description
         $descriptionlink = htmlspecialchars('(<a href="'.$guid.'">Permalink</a>)');
@@ -1044,7 +1052,9 @@ function showATOM()
         if ($usepermalinks===true) $descriptionlink = htmlspecialchars('(<a href="'.$absurl.'">Link</a>)');
         if (strlen($link['description'])>0) $descriptionlink = '&lt;br&gt;'.$descriptionlink;
 
-        $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
+        $Parsedown = new Parsedown();
+        $entries.='<content type="html">'.htmlspecialchars($Parsedown->setMarkupEscaped(true)->text($link['description'])).' '.$descriptionlink.$via."</content>\n";
+        //$entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
         if ($link['tags']!='') // Adding tags to each ATOM entry (as mentioned in ATOM specification)
         {
             foreach(explode(' ',$link['tags']) as $tag)
@@ -1110,6 +1120,8 @@ function showDailyRSS()
     header('Content-Type: application/rss+xml; charset=utf-8');
     $pageaddr=htmlspecialchars(indexUrl());
     echo '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0">';
+    echo '<?xml-stylesheet type="text/css" href="http://shaarli.local/inc/shaarli.css?version=0.0.41+beta" ?>';
+    echo '<?xml-stylesheet type="text/css" href="http://shaarli.local/inc/user.css?version=0.0.41%20beta" ?>';
     echo '<channel><title>Daily - '.htmlspecialchars($GLOBALS['title']).'</title><link>'.$pageaddr.'</link>';
     echo '<description>Daily shared links</description><language>en-en</language><copyright>'.$pageaddr.'</copyright>'."\n";
 
@@ -1867,7 +1879,9 @@ function buildLinkList($PAGE,$LINKSDB)
     while ($i<$end && $i<count($keys))
     {
         $link = $linksToDisplay[$keys[$i]];
-        $link['description']=nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))));
+        //$link['description']=nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))));
+        $Parsedown = new Parsedown();
+        $link['description'] = $Parsedown->setMarkupEscaped(true)->text($link['description']);
         $title=$link['title'];
         $classLi =  $i%2!=0 ? '' : 'publicLinkHightLight';
         $link['class'] = ($link['private']==0 ? $classLi : 'private');
