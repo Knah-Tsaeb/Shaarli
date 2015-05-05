@@ -4,12 +4,17 @@
 <body>
 <div id="pageheader">
     {include="page.header"}
-    <div id="headerform" style="width:100%; white-space:nowrap;">
-        <form method="GET" class="searchform" name="searchform" style="display:inline;"><input type="text" id="searchform_value" name="searchterm" style="width:30%" value=""> <input type="submit" value="Search" class="bigbutton"></form>
-        <form method="GET" class="tagfilter" name="tagfilter" style="display:inline;margin-left:24px;"><input type="text" name="searchtags" id="tagfilter_value" style="width:10%" value=""> <input type="submit" value="Filter by tag" class="bigbutton"></form>
+    <div id="headerform">
+        <form method="GET" class="searchform" name="searchform">
+          <input type="text" id="searchform_value" name="searchterm" value="" placeholder="Search text"/>
+          <input type="submit" value="Search" class="bigbutton"/>
+        </form>
+        <form method="GET" class="tagfilter" name="tagfilter">
+          <input type="text" name="searchtags" id="tagfilter_value" value="" placeholder="Filter by tag"/>
+          <input type="submit" value="Filter by tag" class="bigbutton"/>
+        </form>
     </div>
 </div>
-
 <div id="linklist">
 
     {include="linklist.paging"}

@@ -190,6 +190,66 @@ pre code {
   color: #ffffc9;
 }
 
+.searchform,
+.tagfilter {
+display :inline-block;
+text-align : left;
+margin : 0;
+padding: 0.3em;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+
+.searchform input:nth-child(1),
+.tagfilter input:nth-child(1){
+    order: 1;
+    flex: 1 0 auto;
+    align-self: stretch;
+    }
+
+.searchform input:nth-child(2),
+.tagfilter input:nth-child(2) {
+    order: 2;
+    flex: 0 0 20%;
+    align-self: stretch;
+    }
+
+
+.searchform {
+  width: 70%;
+
+}
+
+.tagfilter {
+  width: 30%;
+  margin-left : 0.3em
+}
+
+.tagfilter input.bigbutton,
+.searchform input.bigbutton,
+.addform input.bigbutton {
+  height : auto;
+  margin :0;
+  padding : 0;
+}
+
+
+#pageheader #logo {
+  height : 50px;
+}
+
+#headerform {
+  max-width:80%;
+  margin:auto;
+  white-space:nowrap;
+  text-align:center;
+  display: flex;
+}
+
 @media handheld,
 only screen and (max-width:560px) ,
 only screen and (max-device-width:854px) {
