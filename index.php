@@ -34,6 +34,7 @@ $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400 ; // Updates check frequency 
 $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // exemple : http://images.thumbshots.com/image.aspx?cid=dgdfgdfg&v=1&w=120&url=
                                               // the last param must be a url
+$GLOBALS['config']['ENABLE_MARKDOWN'] = TRUE;
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
@@ -66,7 +67,9 @@ ini_set('upload_max_filesize', '16M');
 checkphpversion();
 error_reporting(E_ALL^E_WARNING);  // See all error except warnings.
 //error_reporting(-1); // See all errors (for debugging only)
-include 'inc/Parsedown.php';
+if($GLOBALS['config']['ENABLE_MARKDOWN'] === TRUE){
+  include 'inc/Parsedown.php';
+}
 include "inc/rain.tpl.class.php"; //include Rain TPL
 raintpl::$tpl_dir = "tpl/"; // template directory
 if (!is_dir('tmp')) { mkdir('tmp',0705); chmod('tmp',0705); }
@@ -976,11 +979,14 @@ function showRSS()
         } else {
          $via = '';
         }
-        $Parsedown = new Parsedown();
-        echo '<description><![CDATA['.$Parsedown->setMarkupEscaped(true)->text($link['description']).$via.$descriptionlink.']]>
-        </description>'."\n</item>\n";
-        /*echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]>
-        </description>'."\n</item>\n";*/
+        if($GLOBALS['config']['ENABLE_MARKDOWN'] === TRUE){
+          $Parsedown = new Parsedown();
+          echo '<description><![CDATA['.$Parsedown->setMarkupEscaped(true)->setBreaksEnabled(true)->text($link['description']).$via.$descriptionlink.']]>
+          </description>'."\n</item>\n";
+        } else {
+          echo '<description><![CDATA['.nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description'])))).$via.$descriptionlink.']]>
+          </description>'."\n</item>\n";
+        }
         $i++;
     }
     echo '</channel></rss><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
@@ -1052,10 +1058,12 @@ function showATOM()
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = htmlspecialchars('(<a href="'.$absurl.'">Link</a>)');
         if (strlen($link['description'])>0) $descriptionlink = '&lt;br&gt;'.$descriptionlink;
-
-        $Parsedown = new Parsedown();
-        $entries.='<content type="html">'.htmlspecialchars($Parsedown->setMarkupEscaped(true)->text($link['description'])).' '.$descriptionlink.$via."</content>\n";
-        //$entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
+        if($GLOBALS['config']['ENABLE_MARKDOWN'] === TRUE){
+          $Parsedown = new Parsedown();
+          $entries.='<content type="html">'.htmlspecialchars($Parsedown->setMarkupEscaped(true)->setBreaksEnabled(true)->text($link['description'])).' '.$descriptionlink.$via."</content>\n";
+        } else {
+          $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
+        }
         if ($link['tags']!='') // Adding tags to each ATOM entry (as mentioned in ATOM specification)
         {
             foreach(explode(' ',$link['tags']) as $tag)
@@ -1883,9 +1891,12 @@ function buildLinkList($PAGE,$LINKSDB)
     while ($i<$end && $i<count($keys))
     {
         $link = $linksToDisplay[$keys[$i]];
-        //$link['description']=nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))));
-        $Parsedown = new Parsedown();
-        $link['description'] = $Parsedown->setMarkupEscaped(true)->text($link['description']);
+        if($GLOBALS['config']['ENABLE_MARKDOWN'] === TRUE){
+          $Parsedown = new Parsedown();
+          $link['description'] = $Parsedown->setMarkupEscaped(true)->setBreaksEnabled(true)->text($link['description']);
+        } else {
+          $link['description']=nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))));
+        }
         $title=$link['title'];
         $classLi =  $i%2!=0 ? '' : 'publicLinkHightLight';
         $link['class'] = ($link['private']==0 ? $classLi : 'private');
