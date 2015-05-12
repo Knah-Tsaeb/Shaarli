@@ -193,7 +193,8 @@ pre code {
 }
 
 .searchform,
-.tagfilter {
+.tagfilter,
+.addform {
   display: inline-block;
   text-align: left;
   margin: 0;
@@ -207,14 +208,16 @@ pre code {
 }
 
 .searchform input:nth-child(1),
-.tagfilter input:nth-child(1) {
+.tagfilter input:nth-child(1),
+.addform input:nth-child(1){
   order: 1;
   flex: 1 0 auto;
   align-self: stretch;
 }
 
 .searchform input:nth-child(2),
-.tagfilter input:nth-child(2) {
+.tagfilter input:nth-child(2),
+.addform input:nth-child(2) {
   order: 2;
   flex: 0 0 20%;
   align-self: stretch;
@@ -222,6 +225,10 @@ pre code {
 
 .searchform {
   width: 70%;
+}
+
+.addform {
+  width: 100%;
 }
 
 .tagfilter {
@@ -235,6 +242,10 @@ pre code {
   height: auto;
   margin: 0;
   padding: 0;
+}
+
+#editlinkform {
+ margin: 0 auto;
 }
 
 #pageheader #logo {
