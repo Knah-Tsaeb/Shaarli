@@ -35,6 +35,7 @@ $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // exemple : http://images.thumbshots.com/image.aspx?cid=dgdfgdfg&v=1&w=120&url=
                                               // the last param must be a url
 $GLOBALS['config']['ENABLE_MARKDOWN'] = TRUE;
+$GLOBALS['config']['WALLABAG_URL'] = '';
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
