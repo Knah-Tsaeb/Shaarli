@@ -212,13 +212,13 @@ pre code {
   align-items: flex-start;
 }
 
-.searchform input:nth-child(1), .tagfilter input:nth-child(1), .addform input:nth-child(1) {
+.searchform input:nth-child(1), .tagfilter input:nth-child(1), .addform input:nth-child(1){
   order: 1;
   flex: 1 0 auto;
   align-self: stretch;
 }
 
-.searchform input:nth-child(2), .tagfilter input:nth-child(2), .addform input:nth-child(2) {
+.searchform input:nth-child(2), .tagfilter input:nth-child(2), .addform input:nth-child(2){
   order: 2;
   flex: 0 0 20%;
   align-self: stretch;
@@ -308,6 +308,21 @@ pre code {
 
 .linkList {
   padding: 0;
+}
+
+fieldset {
+  border: 1px solid #CDCDCD;
+    border-radius: 0.3em;
+    padding: 0.3em;
+    margin: 0.3em 0;
+}
+
+legend {
+  padding : 0 0.3em;
+  margin: 0 0 0 0.6em;
+  color : #FFFFFF;
+  font-weight: bolder;
+
 }
 
 p {

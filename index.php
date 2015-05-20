@@ -1473,7 +1473,7 @@ function renderPage()
     // -------- User wants to rename a tag or delete it
     if (isset($_SERVER["QUERY_STRING"]) && startswith($_SERVER["QUERY_STRING"],'do=changetag'))
     {
-        if (empty($_POST['fromtag']))
+        if (empty($_POST['fromtag']) && empty($_POST['tagToDelete']))
         {
             $PAGE = new pageBuilder;
             $PAGE->assign('linkcount',count($LINKSDB));
@@ -1484,9 +1484,9 @@ function renderPage()
         if (!tokenOk($_POST['token'])) die('Wrong token.');
 
         // Delete a tag:
-        if (!empty($_POST['deletetag']) && !empty($_POST['fromtag']))
+        if (!empty($_POST['deletetag']) && !empty($_POST['tagToDelete']))
         {
-            $needle=trim($_POST['fromtag']);
+            $needle=trim($_POST['tagToDelete']);
             $linksToAlter = $LINKSDB->filterTags($needle,true); // true for case-sensitive tag search.
             foreach($linksToAlter as $key=>$value)
             {
