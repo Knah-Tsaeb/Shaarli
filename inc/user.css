@@ -306,6 +306,11 @@ pre code {
   display: flex;
 }
 
+.paging_current {
+    color: #fff;
+    display: inline;
+}
+
 .linkList {
   padding: 0;
 }

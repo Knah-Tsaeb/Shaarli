@@ -15,6 +15,6 @@
         <form method="GET" style="display:inline;" class="linksperpage"><input type="text" name="linksperpage" size="2" style="height:15px;"></form>
     </div>
     {if="$previous_page_url"} <a href="{$previous_page_url}" id="paging_older">&#x25C4;Older</a> {/if}
-    <div id="paging_current">page {$page_current} / {$page_max} </div>
+    <div class="paging_current">page {$page_current} / {$page_max} </div>
     {if="$next_page_url"} <a href="{$next_page_url}" id="paging_newer">Newer&#x25BA;</a> {/if}
 </div>
