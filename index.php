@@ -1877,8 +1877,10 @@ function buildLinkList($PAGE,$LINKSDB)
     */
     $keys=array(); foreach($linksToDisplay as $key=>$value) { $keys[]=$key; } // Stupid and ugly. Thanks php.
 
-    // If there is only a single link, we change on-the-fly the title of the page.
-    if (count($linksToDisplay)==1) $GLOBALS['pagetitle'] = $linksToDisplay[$keys[0]]['title'].' - '.$GLOBALS['title'];
+    // If it's a permalink, we change on-the-fly the title of the page.
+    if(!empty($search_type && $search_type == 'permalink')) {
+        $GLOBALS['pagetitle'] = $linksToDisplay[$keys[0]]['title'] . ' - ' . $GLOBALS['title'];
+    }
 
     // Select articles according to paging.
     $pagecount = ceil(count($keys)/$_SESSION['LINKS_PER_PAGE']);
