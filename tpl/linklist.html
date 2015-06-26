@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>{include="includes"}</head>
+  <head>
+    {include="includes"}
+      {if="empty($GLOBALS['disablejquery'])"}
+      <script src="inc/jquery.min.js#"></script>
+      <script src="inc/jquery-ui.min.js#"></script>
+      {/if}
+  </head>
 <body>
 <div id="pageheader">
     {include="page.header"}
@@ -10,7 +16,7 @@
           <input type="submit" value="Search" class="bigbutton"/>
         </form>
         <form method="GET" class="tagfilter" name="tagfilter">
-          <input type="text" name="searchtags" id="tagfilter_value" value="" placeholder="Filter by tag"/>
+          <input type="text" name="searchtags" id="tagfilter_value" value="{loop="search_crits"}{$value|htmlspecialchars} {/loop}" placeholder="Filter by tag"/>
           <input type="submit" value="Filter by tag" class="bigbutton"/>
         </form>
     </div>
@@ -78,7 +84,13 @@
 
     {include="page.footer"}
 
-<script language="JavaScript">
+<script>
+
+$('#tagfilter_value').autocomplete({
+  source : '{$source}?ws=tags',
+  minLength : 1
+  });
+
 // Remove any displayed QR-Code
 function remove_qrcode()
 {
