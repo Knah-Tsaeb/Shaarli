@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>{include="includes"}</head>
-<body onload="document.configform.title.focus();">
+<body>
 <div id="pageheader">
 	{include="page.header"}
 {$timezone_js}
@@ -9,7 +9,7 @@
 	<input type="hidden" name="token" value="{$token}">
 	<table border="0" cellpadding="20">
 
-	    <tr><td><b>Page title:</b></td><td><input type="text" name="title" id="title" size="50" value="{$title}"></td></tr>
+	    <tr><td><b>Page title:</b></td><td><input type="text" name="title" id="title" size="50" value="{$title}" autofocus></td></tr>
 
 	    <tr><td><b>Title link:</b></td><td><input type="text" name="titleLink" id="titleLink" size="50" value="{$titleLink}"></td></tr>
 
