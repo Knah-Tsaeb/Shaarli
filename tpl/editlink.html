@@ -12,7 +12,9 @@
   {elseif condition="$link.description==''"}onload="document.linkform.lf_description.focus();"
   {else}onload="document.linkform.lf_tags.focus();"{/if} >
     <div id="pageheader">
-      {include="page.header"}
+      {if="$source !== 'firefoxsocialapi'"}
+        {include="page.header"}
+      {/if}
       <div id="editlinkform">
         <form method="post" name="linkform">
           <p>
@@ -61,7 +63,9 @@
         </form>
       </div>
     </div>
-    {include="page.footer"}
+    {if="$source !== 'firefoxsocialapi'"}
+      {include="page.footer"}
+    {/if}
     {if="($GLOBALS['config']['OPEN_SHAARLI'] || isLoggedIn()) && empty($GLOBALS['disablejquery'])"}
     <script language="JavaScript">
       $(document).ready(function() {

@@ -1545,7 +1545,7 @@ function renderPage()
         pubsubhub();
 
         // If we are called from the bookmarklet, we must close the popup:
-        if (isset($_GET['source']) && $_GET['source']=='bookmarklet') { echo '<script language="JavaScript">self.close();</script>'; exit; }
+        if (isset($_GET['source']) && ($_GET['source']=='bookmarklet' || $_GET['source']=='firefoxsocialapi')) { echo '<script language="JavaScript">self.close();</script>'; exit; }
         $returnurl = ( isset($_POST['returnurl']) ? $_POST['returnurl'] : '?' );
         $returnurl .= '#'.smallHash($linkdate);  // Scroll to the link which has been edited.
         if (strstr($returnurl, "do=addlink")) { $returnurl = '?'; } //if we come from ?do=addlink, set returnurl to homepage instead
@@ -1557,7 +1557,7 @@ function renderPage()
     if (isset($_POST['cancel_edit']))
     {
         // If we are called from the bookmarklet, we must close the popup;
-        if (isset($_GET['source']) && $_GET['source']=='bookmarklet') { echo '<script language="JavaScript">self.close();</script>'; exit; }
+        if (isset($_GET['source']) && ($_GET['source']=='bookmarklet' || $_GET['source']=='firefoxsocialapi')) { echo '<script language="JavaScript">self.close();</script>'; exit; }
         $returnurl = ( isset($_POST['returnurl']) ? $_POST['returnurl'] : '?' );
         $returnurl .= '#'.smallHash($_POST['lf_linkdate']);  // Scroll to the link which has been edited.
         header('Location: '.$returnurl); // After canceling, redirect to the page the user was on.
@@ -1659,6 +1659,7 @@ function renderPage()
         $PAGE->assign('link_is_new',$link_is_new);
         $PAGE->assign('token',getToken()); // XSRF protection.
         $PAGE->assign('http_referer',(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''));
+        $PAGE->assign('source',(isset($_GET['source']) ? $_GET['source'] : ''));
         $PAGE->renderPage('editlink');
         exit;
     }
