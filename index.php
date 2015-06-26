@@ -28,9 +28,12 @@ $GLOBALS['config']['PAGECACHE'] = 'pagecache'; // Page cache directory.
 $GLOBALS['config']['ENABLE_LOCALCACHE'] = true; // Enable Shaarli to store thumbnail in a local cache. Disable to reduce webspace usage.
                                                 // Care if favicon is active and local cache are false serve page can be long
 $GLOBALS['config']['PUBSUBHUB_URL'] = ''; // PubSubHubbub support. Put an empty string to disable, or put your hub url here to enable.
+                                          // Note: You must have publisher.php in the same directory as Shaarli index.php
 $GLOBALS['config']['UPDATECHECK_FILENAME'] = $GLOBALS['config']['DATADIR'].'/lastupdatecheck.txt'; // For updates check of Shaarli.
 $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400 ; // Updates check frequency for Shaarli. 86400 seconds=24 hours
-                                          // Note: You must have publisher.php in the same directory as Shaarli index.php
+$GLOBALS['config']['UPDATECHECK_URL'] = 'http://book.knah-tsaeb.org/shaarli_version.txt'; // Define last version of myShaarli
+$GLOBALS['config']['UPDATECHECK_DOWNLOAD'] = 'https://forge.leslibres.org/projects/shaarli/repository';
+$GLOBALS['config']['ENABLE_UPDATECHECK'] = TRUE;
 $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // exemple : http://images.thumbshots.com/image.aspx?cid=dgdfgdfg&v=1&w=120&url=
                                               // the last param must be a url
@@ -42,7 +45,7 @@ $GLOBALS['config']['contactLink'] = ''; // Define link for contact Example : htt
 // Optionnal config file.
 if (is_file($GLOBALS['config']['DATADIR'].'/options.php')) require($GLOBALS['config']['DATADIR'].'/options.php');
 
-define('shaarli_version','0.0.41 beta');
+define('myShaarli_version','1.0.0 alpha');
 define('PHPPREFIX','<?php /* '); // Prefix to encapsulate data in php code.
 define('PHPSUFFIX',' */ ?>'); // Suffix to encapsulate data in php code.
 // http://server.com/x/shaarli --> /shaarli/
@@ -148,22 +151,34 @@ function checkphpversion()
 //         other= the available version.
 function checkUpdate()
 {
-    if (!isLoggedIn()) return ''; // Do not check versions for visitors.
-    if (empty($GLOBALS['config']['ENABLE_UPDATECHECK'])) return ''; // Do not check if the user doesn't want to.
-
-    // Get latest version number at most once a day.
-    if (!is_file($GLOBALS['config']['UPDATECHECK_FILENAME']) || (filemtime($GLOBALS['config']['UPDATECHECK_FILENAME'])<time()-($GLOBALS['config']['UPDATECHECK_INTERVAL'])))
-    {
-        $version=shaarli_version;
-        list($httpstatus,$headers,$data) = getHTTP('http://sebsauvage.net/files/shaarli_version.txt',2);
-        if (strpos($httpstatus,'200 OK')!==false) $version=$data;
-        // If failed, nevermind. We don't want to bother the user with that.
-        file_put_contents($GLOBALS['config']['UPDATECHECK_FILENAME'],$version); // touch file date
+    if (!isLoggedIn()){
+      return false; // Do not check versions for visitors.
     }
+    if (empty($GLOBALS['config']['ENABLE_UPDATECHECK'])){
+      return false; // Do not check if the user doesn't want to.
+    }
+    // Get latest version number at most once a day.
+    if (!is_file($GLOBALS['config']['UPDATECHECK_FILENAME']) || (filemtime($GLOBALS['config']['UPDATECHECK_FILENAME'])<time()-($GLOBALS['config']['UPDATECHECK_INTERVAL']))){
+        $version=myShaarli_version;
+        list($httpstatus,$headers,$data) = getHTTP($GLOBALS['config']['UPDATECHECK_URL'],2);
+          if (strpos($httpstatus,'200 OK')!==false){
+            $version=$data;
+          }
+          // If failed, nevermind. We don't want to bother the user with that.
+          file_put_contents($GLOBALS['config']['UPDATECHECK_FILENAME'],$version); // touch file date
+        }
     // Compare versions:
     $newestversion=file_get_contents($GLOBALS['config']['UPDATECHECK_FILENAME']);
-    if (version_compare($newestversion,shaarli_version)==1) return $newestversion;
-    return '';
+    if (version_compare(myShaarli_version,$newestversion)==0){
+      return false;
+    }
+    if (version_compare(myShaarli_version,$newestversion)==1){
+      return 'You have future version ?!';
+    }
+    if (version_compare(myShaarli_version,$newestversion)==-1){
+      return 'New update of myShaarli available.';
+    }
+    return false;
 }
 
 
