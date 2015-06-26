@@ -1878,7 +1878,7 @@ function buildLinkList($PAGE,$LINKSDB)
     $keys=array(); foreach($linksToDisplay as $key=>$value) { $keys[]=$key; } // Stupid and ugly. Thanks php.
 
     // If it's a permalink, we change on-the-fly the title of the page.
-    if(!empty($search_type && $search_type == 'permalink')) {
+    if(!empty($search_type) && $search_type == 'permalink') {
         $GLOBALS['pagetitle'] = $linksToDisplay[$keys[0]]['title'] . ' - ' . $GLOBALS['title'];
     }
 
