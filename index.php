@@ -36,6 +36,7 @@ $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // the last param must be a url
 $GLOBALS['config']['ENABLE_MARKDOWN'] = TRUE;
 $GLOBALS['config']['WALLABAG_URL'] = '';
+$GLOBALS['config']['contactLink'] = ''; // Define link for contact Example : http://example.com/contact.php or mailo:contact@example.com
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.

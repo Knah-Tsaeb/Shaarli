@@ -1,6 +1,6 @@
 <div id="footer">
     <b><a href="http://sebsauvage.net/wiki/doku.php?id=php:shaarli">Shaarli {$version|htmlspecialchars}</a></b> - The personal, minimalist, super-fast, no-database delicious clone. By <a href="http://sebsauvage.net" target="_blank">sebsauvage.net</a>. Theme by <a href="http://blog.idleman.fr" target="_blank">idleman.fr</a>. </br>
-Other change as made by <a href="https://forge.leslibres.org/projects/shaarli/repository/show?rev=myShaarli">Knah Tsaeb</a> for contact me <a href="http://knah-tsaeb.org/contact-page/">use this form</a>.
+Other change as made by <a href="https://forge.leslibres.org/projects/shaarli/repository/show?rev=myShaarli">Knah Tsaeb</a>{if="$GLOBALS['config']['contactLink']"} for contact me <a href="{$GLOBALS['config']['contactLink']}">use this link</a>{/if}.
 </div>
 {if="$newversion"}
     <div id="newversion"><span style="text-decoration:blink;">&#x25CF;</span> Shaarli {$newversion|htmlspecialchars} is <a href="http://sebsauvage.net/wiki/doku.php?id=php:shaarli#download">available</a>.</div>
