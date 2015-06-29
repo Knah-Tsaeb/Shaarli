@@ -1,47 +1,71 @@
 <!DOCTYPE html>
 <html>
-<head>{include="includes"}</head>
-<body>
-<div id="pageheader">
-  {include="page.header"}
-  <div id="toolsdiv">
-    <b>myShaarli version:</b>{#myShaarli_version#}<br><br>
-    {if="!$GLOBALS['config']['OPEN_SHAARLI']"}<a href="?do=changepasswd"><b>Change password</b>  <span>: Change your password.</span></a><br><br>{/if}
-    <a href="?do=configure"><b>Configure your Shaarli</b> <span>:  Change Title, timezone...</span></a><br><br>
-    <a href="?do=changetag"><b>Rename/delete tags</b> <span>:  Rename or delete a tag in all links</span></a><br><br>
-    <a href="?do=import"><b>Import</b> <span>:  Import Netscape html bookmarks (as exported from Firefox, Chrome, Opera, delicious...)</span></a> <br><br>
-    <a href="?do=export"><b>Export</b> <span>:  Export Netscape html bookmarks (which can be imported in Firefox, Chrome, Opera, delicious...)</span></a><br><br>
-    <a class="smallbutton" onclick="alert('Drag this link to your bookmarks toolbar, or right-click it and choose Bookmark This Link...');return false;" href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('{$pageabsaddr}?post='%20+%20encodeURIComponent(url)+'&amp;title='%20+%20encodeURIComponent(title)+'&amp;description='%20+%20encodeURIComponent(document.getSelection())+'&amp;source=bookmarklet','_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();"><b>✚Shaare link</b></a> <a href="#" style="clear:none;"><span>&#x21D0; Drag this link to your bookmarks toolbar (or right-click it and choose Bookmark This Link....).<br>&nbsp;&nbsp;&nbsp;&nbsp;Then click "✚Shaare link" button in any page you want to share.</span></a><br><br>
-    <a class="smallbutton" onclick="alert('Drag this link to your bookmarks toolbar, or right-click it and choose Bookmark This Link...');return false;" href="?private=1&post="><b>✚Add Note</b></a> <a href="#" style="clear:none;"><span>&#x21D0; Drag this link to your bookmarks toolbar (or right-click it and choose Bookmark This Link....).<br>&nbsp;&nbsp;&nbsp;&nbsp;Then click "✚Add Note" button anytime to start composing a (default private)  Note (text post) to your Shaarli.</span></a><br><br>
-    <a class="smallbutton" onclick="activateFirefoxSocial(this)"><b>✚Add to Firefox social</b></a> <a href="#" style="clear:none;"><span>&#x21D0; Click on this button to add Shaarli to the "Share this page" button in Firefox.</span></a><br><br>
-    <div class="clear"></div>
-  </div>
-</div>
-{include="page.footer"}
+  <head>
+    {include="includes"}
+  </head>
+  <body>
+    <div id="pageheader">
+      {include="page.header"}
+      <div id="toolsdiv">
+        <ul>
+          <li>
+            <a href="{$GLOBALS['config']['UPDATECHECK_DOWNLOAD']}">Version : <span>myshaarli {#myShaarli_version#}</span></a>
+          </li>
+          {if="!$GLOBALS['config']['OPEN_SHAARLI']"}
+          <li>
+            <a href="?do=changepasswd">Change password : <span>Change your password.</span></a>
+          </li>
+          {/if}
+          <li>
+            <a href="?do=configure">Configure your Shaarli : <span>Change Title, timezone...</span></a>
+          </li>
+          <li>
+            <a href="?do=changetag">Rename/delete tags : <span>Rename or delete a tag in all links</span></a>
+          </li>
+          <li>
+            <a href="?do=import">Import : <span>Import Netscape html bookmarks (as exported from Firefox, Chrome, Opera, delicious...)</span></a>
+          </li>
+          <li>
+            <a href="?do=export">Export : <span>Export Netscape html bookmarks (which can be imported in Firefox, Chrome, Opera, delicious...)</span></a>
+          </li>
+          <li>
+            <a class="smallbutton" onclick="alert('Drag this link to your bookmarks toolbar, or right-click it and choose Bookmark This Link...');return false;" href="javascript:javascript:(function(){var%20url%20=%20location.href;var%20title%20=%20document.title%20||%20url;window.open('{$pageabsaddr}?post='%20+%20encodeURIComponent(url)+'&amp;title='%20+%20encodeURIComponent(title)+'&amp;description='%20+%20encodeURIComponent(document.getSelection())+'&amp;source=bookmarklet','_blank','menubar=no,height=390,width=600,toolbar=no,scrollbars=no,status=no,dialog=1');})();">✚Shaare link</a><a href="#" style="clear:none;"><span>&#x21D0; Drag this link to your bookmarks toolbar (or right-click it and choose Bookmark This Link....).
+              <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;Then click "✚Shaare link" button in any page you want to share.</span></a>
+          </li>
+          <li>
+            <a class="smallbutton" onclick="alert('Drag this link to your bookmarks toolbar, or right-click it and choose Bookmark This Link...');return false;" href="?private=1&post=">✚Add Note</a><a href="#" style="clear:none;"><span>&#x21D0; Drag this link to your bookmarks toolbar (or right-click it and choose Bookmark This Link....).
+              <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;Then click "✚Add Note" button anytime to start composing a (default private)  Note (text post) to your Shaarli.</span></a>
+          </li>
+          <li>
+            <a class="smallbutton" onclick="activateFirefoxSocial(this)">✚Add to Firefox social</a><a href="#" style="clear:none;"><span>&#x21D0; Click on this button to add Shaarli to the "Share this page" button in Firefox.</span></a>
+          </li>
+        </ul>
+        <div class="clear"></div>
+      </div>
+    </div>
+    {include="page.footer"}
     <script>
       function activateFirefoxSocial(node) {
         var loc = location.href;
         var baseURL = loc.substring(0, loc.lastIndexOf("/"));
-
         // Keeping the data separated (ie. not in the DOM) so that it's maintainable and diffable.
         var data = {
-          name: "{$shaarlititle}",
-          description: "The personal, minimalist, super-fast, no-database delicious clone.",
-          author: "Shaarli",
-          version: "1.0.0",
-
-          iconURL: baseURL + "/images/favicon.ico",
-          icon32URL: baseURL + "/images/favicon.ico",
-          icon64URL: baseURL + "/images/favicon.ico",
-
-          shareURL: baseURL + "{noparse}?post=%{url}&title=%{title}&description=%{description}&source=firefoxsocialapi{/noparse}",
-          homepageURL: baseURL
+          name : "{$shaarlititle}",
+          description : "The personal, minimalist, super-fast, no-database delicious clone.",
+          author : "Shaarli",
+          version : "1.0.0",
+          iconURL : baseURL + "/images/favicon.ico",
+          icon32URL : baseURL + "/images/favicon.ico",
+          icon64URL : baseURL + "/images/favicon.ico",
+          shareURL : baseURL + "{noparse}?post=%{url}&title=%{title}&description=%{description}&source=firefoxsocialapi{/noparse}",
+          homepageURL : baseURL
         };
         node.setAttribute("data-service", JSON.stringify(data));
-
         var activate = new CustomEvent("ActivateSocialFeature");
         node.dispatchEvent(activate);
       }
     </script>
-</body>
+  </body>
 </html>

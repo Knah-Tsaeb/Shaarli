@@ -199,7 +199,7 @@ sub, sup {
 }
 
 ul, ol {
-  margin: 1em 0;
+  margin: 0;
   padding: 0 0 0 2em;
 }
 
@@ -305,8 +305,13 @@ a, .linkdescription a {
   text-align: right;
 }
 
+#toolsdiv a {
+  font-weight: bold;
+}
+
 #toolsdiv a span {
   color: #ffffff;
+  font-weight :normal;
 }
 
 .linksperpage, .tagfilter, .searchform, .addform {
