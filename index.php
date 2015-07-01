@@ -40,10 +40,13 @@ $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
 $GLOBALS['config']['ENABLE_MARKDOWN'] = TRUE;
 $GLOBALS['config']['WALLABAG_URL'] = '';
 $GLOBALS['config']['contactLink'] = ''; // Define link for contact Example : http://example.com/contact.php or mailo:contact@example.com
+$GLOBALS['config']['THEME'] = 'myShaarli';
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
-if (is_file($GLOBALS['config']['DATADIR'].'/options.php')) require($GLOBALS['config']['DATADIR'].'/options.php');
+if (is_file($GLOBALS['config']['DATADIR'].'/options.php')){
+  require($GLOBALS['config']['DATADIR'].'/options.php');
+}
 
 define('myShaarli_version','1.0.0 alpha');
 define('PHPPREFIX','<?php /* '); // Prefix to encapsulate data in php code.
@@ -373,8 +376,11 @@ function isLoggedIn()
 }
 
 // Force logout.
-function logout() { if (isset($_SESSION)) { unset($_SESSION['uid']); unset($_SESSION['ip']); unset($_SESSION['username']); unset($_SESSION['privateonly']); }
-setcookie('shaarli_staySignedIn', FALSE, 0, WEB_PATH);
+function logout() {
+  if (isset($_SESSION)) {
+    unset($_SESSION['uid'], $_SESSION['ip'], $_SESSION['username'], $_SESSION['privateonly']);
+  }
+  setcookie('shaarli_staySignedIn', FALSE, 0, WEB_PATH);
 }
 
 
@@ -680,6 +686,7 @@ class pageBuilder
     private function initialize()
     {
         $this->tpl = new RainTPL;
+        $this->tpl->assign('theme',$GLOBALS['config']['THEME']);
         $this->tpl->assign('newversion',checkUpdate());
         $this->tpl->assign('feedurl',htmlspecialchars(indexUrl()));
         $searchcrits=''; // Search criteria
@@ -1460,14 +1467,26 @@ function renderPage()
                 if (isTZvalid($_POST['continent'],$_POST['city']))
                     $tz = $_POST['continent'].'/'.$_POST['city'];
             $GLOBALS['timezone'] = $tz;
-            $GLOBALS['title']=$_POST['title'];
-            $GLOBALS['titleLink']=$_POST['titleLink'];
+            $GLOBALS['title']=htmlentities(strip_tags($_POST['title']));
+            $GLOBALS['titleLink']=htmlentities(strip_tags($_POST['titleLink']));
             $GLOBALS['redirector']=$_POST['redirector'];
             $GLOBALS['disablesessionprotection']=!empty($_POST['disablesessionprotection']);
             $GLOBALS['disablejquery']=!empty($_POST['disablejquery']);
             $GLOBALS['privateLinkByDefault']=!empty($_POST['privateLinkByDefault']);
             $GLOBALS['config']['ENABLE_RSS_PERMALINKS']= !empty($_POST['enableRssPermalinks']);
             $GLOBALS['config']['ENABLE_UPDATECHECK'] = !empty($_POST['updateCheck']);
+            $GLOBALS['config']['ENABLE_MARKDOWN'] = !empty($_POST['enableMarkdown']);
+            $GLOBALS['config']['HIDE_TIMESTAMPS'] = !empty($_POST['hideTimestamps']);
+            $GLOBALS['config']['BAN_AFTER'] = (int)$_POST['banAfter'];
+            $GLOBALS['config']['BAN_DURATION'] = (int)$_POST['banDuration'];
+            $GLOBALS['config']['THEME'] = htmlentities(strip_tags($_POST['theme']));
+            $GLOBALS['config']['LINKS_PER_PAGE'] = (int)$_POST['linkPerPage'];
+            $GLOBALS['config']['ENABLE_THUMBNAILS'] = !empty($_POST['enableThumbnails']);
+            $GLOBALS['config']['ENABLE_FAVICON'] = !empty($_POST['enableFavicon']);
+            $GLOBALS['config']['ENABLE_LOCALCACHE'] = !empty($_POST['enableCache']);
+            $GLOBALS['config']['externalThumbshot'] = $_POST['externalThumbshot'];
+            $GLOBALS['config']['contactLink'] = $_POST['contactLink'];
+            $_SESSION['LINKS_PER_PAGE'] = (int)$_POST['linkPerPage'];
             writeConfig();
             echo '<script language="JavaScript">alert("Configuration was saved.");document.location=\'?do=tools\';</script>';
             exit;
@@ -1475,6 +1494,7 @@ function renderPage()
         else // Show the configuration form.
         {
             $PAGE = new pageBuilder;
+            $PAGE->assign('themes',getAllTheme());
             $PAGE->assign('linkcount',count($LINKSDB));
             $PAGE->assign('token',getToken());
             $PAGE->assign('title',htmlspecialchars( empty($GLOBALS['title']) ? '' : $GLOBALS['title'] , ENT_QUOTES));
@@ -2378,6 +2398,14 @@ function processWS()
     }
 }
 
+function getAllTheme(){
+  $allTheme = glob('inc/styles/*.css');
+  foreach ($allTheme as $value) {
+	 $themes[] = basename($value, '.css');
+  }
+  return $themes;
+}
+
 // Re-write configuration file according to globals.
 // Requires some $GLOBALS to be set (login,hash,salt,title).
 // If the config file cannot be saved, an error message is dislayed and the user is redirected to "Tools" menu.
@@ -2394,6 +2422,17 @@ function writeConfig()
     $config .= '$GLOBALS[\'privateLinkByDefault\']='.var_export($GLOBALS['privateLinkByDefault'],true).'; ';
     $config .= '$GLOBALS[\'config\'][\'ENABLE_RSS_PERMALINKS\']='.var_export($GLOBALS['config']['ENABLE_RSS_PERMALINKS'], true).'; ';
     $config .= '$GLOBALS[\'config\'][\'ENABLE_UPDATECHECK\']='.var_export($GLOBALS['config']['ENABLE_UPDATECHECK'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_MARKDOWN\']='.var_export($GLOBALS['config']['ENABLE_MARKDOWN'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'BAN_AFTER\']='.var_export($GLOBALS['config']['BAN_AFTER'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'BAN_DURATION\']='.var_export($GLOBALS['config']['BAN_DURATION'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'THEME\']='.var_export($GLOBALS['config']['THEME'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'LINKS_PER_PAGE\']='.var_export($GLOBALS['config']['LINKS_PER_PAGE'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'HIDE_TIMESTAMPS\']='.var_export($GLOBALS['config']['HIDE_TIMESTAMPS'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_THUMBNAILS\']='.var_export($GLOBALS['config']['ENABLE_THUMBNAILS'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_FAVICON\']='.var_export($GLOBALS['config']['ENABLE_FAVICON'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_LOCALCACHE\']='.var_export($GLOBALS['config']['ENABLE_LOCALCACHE'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'externalThumbshot\']='.var_export($GLOBALS['config']['externalThumbshot'], true).'; ';
+    $config .= '$GLOBALS[\'config\'][\'contactLink\']='.var_export($GLOBALS['config']['contactLink'], true).'; ';
     $config .= ' ?>';
     if (!file_put_contents($GLOBALS['config']['CONFIG_FILE'],$config) || strcmp(file_get_contents($GLOBALS['config']['CONFIG_FILE']),$config)!=0)
     {

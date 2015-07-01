@@ -1,38 +1,128 @@
 <!DOCTYPE html>
 <html>
-<head>{include="includes"}</head>
-<body onload="document.configform.title.focus();">
-<div id="pageheader">
-	{include="page.header"}
-{$timezone_js}
-    <form method="POST" action="" name="configform" id="configform">
-	<input type="hidden" name="token" value="{$token}">
-	<table border="0" cellpadding="20">
+  <head>
+    {include="includes"}
+  </head>
+  <body>
+    <div id="pageheader">
+      {include="page.header"}
+      {$timezone_js}
+      <form method="POST" action="" name="configform" id="configform">
+        <ul class="tabs">
+          <li>
+            <input type="radio" checked name="tabs" id="tab1">
+            <label class="tabsLabel" for="tab1">&#9658; General</label>
+            <div id="tab-content1" class="tab-content">
+              <p>
+                <label for="title">Page title :</label>
+                <input type="text" name="title" id="title" size="50" value="{$title}" autofocus>
+              </p>
+              <p>
+                <label for="titleLink">Title link :</label>
+                <input type="text" name="titleLink" id="titleLink" size="50" value="{$titleLink}">
+              </p>
+              <p>
+                <label for="contactLink">Contact link in footer: </label>
+                <input type="text" name="contactLink" id="contactLink" value="{$GLOBALS['config']['contactLink']}"/>
+                <span>Example : http://example.com/contact.php or mailo:contact@example.com</span>
+              </p>
+              <p>
+                <label>Timezone : </label>
+                {$timezone_form}
+              </p>
+              <p>
+                <label for="redirector">Redirector : </label>
+                <input type="text" name="redirector" id="redirector" size="50" value="{$redirector}">
+                (e.g. <i>http://anonym.to/?</i> will mask the HTTP_REFERER)
+              </p>
+              <p>
+                <label for="enableCache">Enable local cache : </label>
+                <input type="checkbox" name="enableCache" id="enableCache" {if="!empty($GLOBALS['config']['ENABLE_LOCALCACHE'])"}checked{/if}/>
+              </p>
+            </div>
+          </li>
+          <li>
+            <input type="radio" name="tabs" id="tab2">
+            <label class="tabsLabel" for="tab2" >&#9658; Security</label>
+            <div id="tab-content2" class="tab-content">
+              <p>
+                <label for="disablesessionprotection">Security :</label>
+                <input type="checkbox" name="disablesessionprotection" id="disablesessionprotection" {if="!empty($GLOBALS['disablesessionprotection'])"}checked{/if}>
+                <label for="disablesessionprotection">&nbsp;Disable session cookie hijacking protection (Check this if you get disconnected often or if your IP address changes often.)</label>
+              </p>
+              <p>
+                <label for="banAfter">Ban after : </label>
+                <input type="text" name="banAfter" id="banAfter" value="{$GLOBALS['config']['BAN_AFTER']}"/>
+              </p>
+              <p>
+                <label for="banDuration">Ban time : </label>
+                <input type="text" name="banDuration" id="banDuration" value="{$GLOBALS['config']['BAN_DURATION']}"/>
+                in second
+              </p>
+              <p>
+                <label for="updateCheck">Update :</label>
+                <input type="checkbox" name="updateCheck" id="updateCheck" {if="!empty($GLOBALS['config']['ENABLE_UPDATECHECK'])"}checked{/if}/>
+                <label for="updateCheck">&nbsp;Notify me when a new release is ready</label>
+              </p>
 
-	    <tr><td><b>Page title:</b></td><td><input type="text" name="title" id="title" size="50" value="{$title}"></td></tr>
-
-	    <tr><td><b>Title link:</b></td><td><input type="text" name="titleLink" id="titleLink" size="50" value="{$titleLink}"></td></tr>
-
-	    <tr><td valign="top"><b>Timezone:</b></td><td valign="top">{$timezone_form}</td></tr>
-
-	    <tr><td valign="top"><b>Redirector</b></td><td><input type="text" name="redirector" id="redirector" size="50" value="{$redirector}"><br>(e.g. <i>http://anonym.to/?</i> will mask the HTTP_REFERER)</td></tr>
-
-        <tr><td valign="top"><b>Security:</b></td><td><input type="checkbox" name="disablesessionprotection" id="disablesessionprotection" {if="!empty($GLOBALS['disablesessionprotection'])"}checked{/if}><label for="disablesessionprotection">&nbsp;Disable session cookie hijacking protection (Check this if you get disconnected often or if your IP address changes often.)</label></td></tr>
-
-        <tr><td valign="top"><b>Features:</b></td><td>
-        	<input type="checkbox" name="disablejquery" id="disablejquery" {if="!empty($GLOBALS['disablejquery'])"}checked{/if}><label for="disablejquery">&nbsp;Disable jQuery and all heavy javascript (for example: Autocomplete in tags. Useful for slow computers.)</label>
-        </td></tr>
-        <tr><td valign="top"><b>New link:</b></td><td>
-        	<input type="checkbox" name="privateLinkByDefault" id="privateLinkByDefault" {if="!empty($GLOBALS['privateLinkByDefault'])"}checked{/if}/><label for="privateLinkByDefault">&nbsp;All new link are private by default</label></td>
-        </tr>
-        <tr><td valign="top"><b>Update:</b></td><td>
-          <input type="checkbox" name="updateCheck" id="updateCheck" {if="!empty($GLOBALS['config']['ENABLE_UPDATECHECK'])"}checked{/if}/>
-          <label for="updateCheck">&nbsp;Notify me when a new release is ready</label></td>
-        </tr>
-	  <tr><td></td><td align="right"><input type="submit" name="Save" value="Save config" class="bigbutton"></td></tr>
-	</table>
-	</form>
-</div>
-{include="page.footer"}
-</body>
+            </div>
+          </li>
+          <li>
+            <input type="radio" name="tabs" id="tab3">
+            <label class="tabsLabel" for="tab3">&#9658; Display</label>
+            <div id="tab-content3" class="tab-content">
+              <p>
+                <label for="theme">Theme : </label>
+                <select name="theme" id="theme">
+                  {loop="themes"}
+                  <option {if="$GLOBALS['config']['THEME']==$value"}selected{/if} value="{$value}">{$value|ucfirst}</option>
+                  {/loop}
+                </select>
+              </p>
+              <p>
+                <label for="linkPerPage">Link per page : </label>
+                <input type="text" name="linkPerPage" id="linkPerPage" value="{$GLOBALS['config']['LINKS_PER_PAGE']}"/>
+              </p>
+              <p>
+                <label for="hideTimestamps">Hide timestamps : </label>
+                <input type="checkbox" name="hideTimestamps" id="hideTimestamps" {if="!empty($GLOBALS['config']['HIDE_TIMESTAMPS'])"}checked{/if}/>
+              </p>
+            </div>
+          </li>
+          <li>
+            <input type="radio" name="tabs" id="tab4">
+            <label class="tabsLabel" for="tab4">&#9658; Extra</label>
+            <div id="tab-content4" class="tab-content">
+              <p>
+                <label for="privateLinkByDefault">New link:</label>
+                <input type="checkbox" name="privateLinkByDefault" id="privateLinkByDefault" {if="!empty($GLOBALS['privateLinkByDefault'])"}checked{/if}/>
+                <label for="privateLinkByDefault">&nbsp;All new link are private by default</label>
+              </p>
+              <p>
+                <label for="enableMarkdown">Enable Markdown : </label>
+                <input type="checkbox" name="enableMarkdown" id="enableMarkdown" {if="!empty($GLOBALS['config']['ENABLE_MARKDOWN'])"}checked{/if}/>
+              </p>
+              <p>
+                <label for="enableThumbnails">Enable thumbnail : </label>
+                <input type="checkbox" name="enableThumbnails" id="enableThumbnails" {if="!empty($GLOBALS['config']['ENABLE_THUMBNAILS'])"}checked{/if}/>
+              </p>
+              <p>
+                <label for="externalThumbshot">External thumbnailer : </label>
+                <input type="text" name="externalThumbshot" id="externalThumbshot" size="50" value="{$GLOBALS['config']['externalThumbshot']}">
+              </p>
+              <p>
+                <label for="enableFavicon">Enable favicon : </label>
+                <input type="checkbox" name="enableFavicon" id="enableFavicon" {if="!empty($GLOBALS['config']['ENABLE_FAVICON'])"}checked{/if}/>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <p>
+          <input type="hidden" name="token" value="{$token}">
+          <input type="submit" name="Save" value="Save config" class="bigbutton">
+        </p>
+      </form>
+    </div>
+    {include="page.footer"}
+  </body>
 </html>

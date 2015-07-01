@@ -311,7 +311,7 @@ a, .linkdescription a {
 
 #toolsdiv a span {
   color: #ffffff;
-  font-weight :normal;
+  font-weight: normal;
 }
 
 .linksperpage, .tagfilter, .searchform, .addform {
@@ -695,12 +695,6 @@ a, .linkdescription a {
   padding: 10px 5px;
 }
 
-#configform td {
-  color: #ccc;
-  font-size: 10pt;
-  padding: 10px 5px;
-}
-
 .thumbnail {
   float: left;
   margin: 0;
@@ -714,9 +708,8 @@ a, .linkdescription a {
   border-radius: .3em;
 }
 
-.linkcontainer {
+.linkcontainerThumb {
   margin-left: 130px;
-  position: static;
 }
 
 .favicon {
@@ -934,6 +927,15 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
   padding: 10px 5px;
 }
 
+#configform {
+  margin: 0 auto;
+  width: 70%;
+}
+
+#configform label {
+  font-weight: bold;
+}
+
 .picwall_pictureframe span.info, .lazyimage {
   display: none;
 }
@@ -942,6 +944,71 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
   float: left;
   position: relative;
   width: 33%;
+}
+
+/*
+ * Creating Content Tabs with Pure CSS
+ * http://www.onextrapixel.com/2013/07/31/creating-content-tabs-with-pure-css/
+ */
+
+.tabs input[type=radio] {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+.tabs {
+  float: none;
+  list-style: none;
+  position: relative;
+  padding: 0;
+}
+
+.tabs li {
+  display: block;
+}
+
+.tabsLabel {
+  background: #333333 linear-gradient(#333333,#000000) repeat scroll 0 0;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  color: #a2dd42;
+  display: block;
+  font-size: 1.1em;
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+  transition: all .2s ease-in-out;
+  padding: .3em .6em;
+}
+
+.tabsLabel:hover {
+  color: #ffffc9;
+}
+
+[id^=tab]:checked + .tabsLabel {
+  color: #ffffc9;
+}
+
+[id^=tab]:checked ~
+[id^=tab-content] {
+  display: block;
+}
+
+.tab-content {
+  z-index: 2;
+  display: none;
+  text-align: left;
+  width: 100%;
+  left: 0;
+  box-sizing: border-box;
+  -webkit-animation-duration: .5s;
+  -o-animation-duration: .5s;
+  -moz-animation-duration: .5s;
+  animation-duration: .5s;
+  border: 1px solid #ccc;
+  border-radius: .3em;
+  padding: 15px;
 }
 
 @media print {
