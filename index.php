@@ -1695,7 +1695,6 @@ function renderPage()
         $PAGE->assign('link_is_new',$link_is_new);
         $PAGE->assign('token',getToken()); // XSRF protection.
         $PAGE->assign('http_referer',(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''));
-        $PAGE->assign('source',(isset($_GET['source']) ? $_GET['source'] : ''));
         $PAGE->renderPage('editlink');
         exit;
     }
