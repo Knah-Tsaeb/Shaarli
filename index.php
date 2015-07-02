@@ -1640,9 +1640,9 @@ function renderPage()
         $url=$_GET['post'];
 
         // We remove the annoying parameters added by FeedBurner and GoogleFeedProxy (?utm_source=...)
-        $i=strpos($url,'&utm_source='); if ($i!==false) $url=substr($url,0,$i);
-        $i=strpos($url,'?utm_source='); if ($i!==false) $url=substr($url,0,$i);
-        $i=strpos($url,'#xtor=RSS-'); if ($i!==false) $url=substr($url,0,$i);
+        $i=stripos($url,'&utm_source='); if ($i!==false) $url=substr($url,0,$i);
+        $i=stripos($url,'?utm_source='); if ($i!==false) $url=substr($url,0,$i);
+        $i=stripos($url,'#xtor=RSS-'); if ($i!==false) $url=substr($url,0,$i);
 
         $link_is_new = false;
         $link = $LINKSDB->getLinkFromUrl($url); // Check if URL is not already in database (in this case, we will edit the existing link)
