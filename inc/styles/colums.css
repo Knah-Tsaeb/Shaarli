@@ -264,10 +264,11 @@ a, .linkdescription a {
 .linkeditbuttons {
   background-color: inherit;
   border-radius: 0 6px 6px 0;
-  float: right;
   margin-right: .3em;
   padding: 0;
-  position: relative;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 #pageheader #logo {
@@ -503,17 +504,28 @@ a, .linkdescription a {
 
 #linklist, #cloudtag {
   margin: 0 auto;
-  max-width: 80%;
+  max-width: 98%;
   padding: .3em;
 }
 
+.linkList {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 #linklist li, #linklist li.private {
+  box-sizing: border-box;
   background: #fff;
   border: 1px solid #cdcdcd;
   border-radius: .3em;
-  clear: both;
-  margin: 1em 0;
+  flex: 0 0 auto;
+  margin: .3em 0;
   padding: .3em;
+  position: relative;
+  width: calc(25% - .6em);
 }
 
 #linklist li.publicLinkHightLight {
@@ -550,7 +562,8 @@ a, .linkdescription a {
 }
 
 .linktitle {
-  margin-bottom: 0;
+  display: block;
+  text-align: center;
 }
 
 .linktitle a {
@@ -597,6 +610,7 @@ a, .linkdescription a {
   margin-top: 0;
   max-height: 400px;
   overflow: auto;
+  clear: both;
 }
 
 .linkdescription a {
@@ -707,20 +721,16 @@ a, .linkdescription a {
 }
 
 .thumbnail {
-  float: left;
   margin: 0;
   min-height: 96px;
   min-width: 120px;
   padding: .1em;
+  text-align: center;
 }
 
 .thumbnail img {
   background-color: #fff;
   border-radius: .3em;
-}
-
-.linkcontainerThumb {
-  margin-left: 130px;
 }
 
 .favicon {
@@ -1079,8 +1089,35 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
     font-style: italic;
   }
 }
+@media handheld, only screen and (max-width: 1024px), only screen and (max-device-width: 1024px) {
+  #linklist li, #linklist li.private {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #cdcdcd;
+    border-radius: 0.3em;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    margin: 0.3em 0;
+    padding: 0.3em;
+    position: relative;
+    width: calc(33.33% - 0.6em);
+  }
+}
 
-@media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 854px) {
+@media handheld, only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
+  #linklist li, #linklist li.private {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #cdcdcd;
+    border-radius: 0.3em;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    margin: 0.3em 0;
+    padding: 0.3em;
+    position: relative;
+    width: calc(50% - 0.6em);
+  }
+}
+
+@media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
   #pageheader a {
     border-radius: 5px 5px 5px 5px;
     margin: 3px;
@@ -1199,5 +1236,17 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
 
   #searchform_value, #tagfilter_value {
     width: 70%;
+  }
+
+  #linklist li, #linklist li.private {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #cdcdcd;
+    border-radius: 0.3em;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    margin: 0.3em 0;
+    padding: 0.3em;
+    position: relative;
+    width: calc(100% - 0.6em);
   }
 }
