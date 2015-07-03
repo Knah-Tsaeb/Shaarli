@@ -796,15 +796,15 @@ a, .linkdescription a {
 
 #permalinkQrcode {
   background-color: #ffffff;
-  border: 1px solid black;
+  border: 1px solid #000000;
   box-shadow: 2px 2px 20px 2px #333333;
-  font-size: 8pt;
+  font-size: 0.9em;
   height: 220px;
-  left: -100px;
-  padding: 20px;
-  position: absolute;
+  left: calc(50% - 110px);
+  padding: 0.6em;
+  position: fixed;
   text-align: center;
-  top: -100px;
+  top: calc(50% - 110px);
   width: 220px;
   z-index: 50;
 }
