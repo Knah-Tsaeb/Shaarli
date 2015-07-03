@@ -3,12 +3,12 @@
   <head>
     {include="includes"}
   </head>
-  <body onload="document.addform.post.focus();">
+  <body>
     <div id="pageheader">
       {include="page.header"}
       <div id="headerform">
         <form method="GET" action="" name="addform" class="addform">
-          <input type="text" name="post">
+          <input type="text" name="post" autofocus>
           <input type="submit" value="Add link" class="bigbutton">
         </form>
       </div>
