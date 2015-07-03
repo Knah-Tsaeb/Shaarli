@@ -694,7 +694,7 @@ class pageBuilder
         elseif (!empty($_GET['searchterm'])) $searchcrits.='&searchterm='.urlencode($_GET['searchterm']);
         $this->tpl->assign('searchcrits',$searchcrits);
         $this->tpl->assign('source',indexUrl());
-        $this->tpl->assign('version',shaarli_version);
+        $this->tpl->assign('version',myShaarli_version);
         $this->tpl->assign('scripturl',indexUrl());
         $this->tpl->assign('pagetitle','Shaarli');
         $this->tpl->assign('privateonly',!empty($_SESSION['privateonly'])); // Show only private links ?
