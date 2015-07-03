@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>{include="includes"}</head>
-<body>
-	<div id="pageheader">{include="page.header"}</div>
-<center>
-<div id="cloudtag">
-    {loop="tags"}
-    <span>{$value.count}</span><a href="?searchtags={$key|htmlspecialchars}" style="font-size:{$value.size}em;">{$key|htmlspecialchars}</a>
-    {/loop}
-</div>
-</center>
-{include="page.footer"}
-</body>
+  <head>
+    {include="includes"}
+  </head>
+  <body>
+    <div id="pageheader">
+      {include="page.header"}
+    </div>
+    <div id="cloudtag">
+      {loop="tags"}
+      <span>{$value.count}</span><a href="?searchtags={$key|htmlspecialchars}" style="font-size:{$value.size}em;">{$key|htmlspecialchars}</a>
+      {/loop}
+    </div>
+    {include="page.footer"}
+  </body>
 </html>
