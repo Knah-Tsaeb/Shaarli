@@ -361,6 +361,7 @@ a, .linkdescription a {
 
 .linksperpage {
   box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  display: inline;
   padding: 3px;
 }
 
@@ -370,6 +371,10 @@ a, .linkdescription a {
   box-shadow: none;
   color: #606060;
   padding: 5px;
+}
+
+.linksperpage input {
+  width: 2em;
 }
 
 .tagfilter input.bigbutton, .searchform input.bigbutton, .addform input.bigbutton {
@@ -425,6 +430,7 @@ a, .linkdescription a {
 .paging a:link {
   color: #ccc;
   text-decoration: none;
+  margin: 0 0.2em;
 }
 
 .paging a:visited {
@@ -439,13 +445,12 @@ a, .linkdescription a {
   color: #fff;
 }
 
-#paging_privatelinks {
+.paging_privatelinks {
   float: left;
 }
 
-#paging_linksperpage {
+.paging_linksperpage {
   float: right;
-  padding-right: 5px;
 }
 
 .paging_current {
@@ -453,12 +458,17 @@ a, .linkdescription a {
   display: inline;
 }
 
-#paging_older {
+.paging_older {
   margin-right: 15px;
 }
 
-#paging_newer {
+.paging_newer {
   margin-left: 15px;
+}
+
+.paginNavigation {
+  margin: 0 auto;
+  width: 50%;
 }
 
 #headerform {
@@ -1158,13 +1168,13 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
     top: -10px;
   }
 
-  #paging_linksperpage {
+  .paging_linksperpage {
     float: none;
     font-size: smaller;
     margin-bottom: 10px;
   }
 
-  #paging_older, #paging_newer, #paging_linksperpage a {
+  .paging_older, .paging_newer, .paging_linksperpage a {
     background-color: #666;
     border: 1px solid black;
     border-radius: 5px 5px 5px 5px;
