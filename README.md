@@ -3,7 +3,7 @@
 Shaarli, the personal, minimalist, super-fast, no-database delicious clone.
 
 You want to share the links you discover ? Shaarli is a minimalist delicious clone you can install on your own website.
-It is designed to be personal (single-user), fast and handy. 
+It is designed to be personal (single-user), fast and handy.
 
 
 Features:
@@ -39,6 +39,22 @@ Features:
  * Pages are easy to customize (using CSS and simple RainTPL templates)
 
 
+myShaarli Features :
+
+ * Markdown syntax
+ * Define external thumbnailer
+ * Add favicon
+ * Better configuration page
+ * Theme support
+ * Add extra field for origin of link
+ * New default theme
+ * Add link to archive.org (qwertygc https://github.com/nodiscc/Shaarli/commit/b113dc8e6bba052883297ab575dd36fd3073805e)
+ * myShaali can use Firefox social API (Marsup https://github.com/shaarli/Shaarli/commit/d33c5d4c3b9c70441391a08e8bcb2a8c639a4635)
+ * myShaali can post original article to wallabag (nodiscc https://github.com/nodiscc/Shaarli/tree/new-plugin-system/tpl/plugins/wallabag)
+ * Few small fix
+ * You can upgrade original Shaarli to myShaarli without lost your data
+ * You can define url origin of update
+
 Requires php 5.1
 
 More information on the project page:
@@ -55,10 +71,10 @@ In no event will the authors be held liable for any damages arising from
 the use of this software.
 
 Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute it 
+including commercial applications, and to alter it and redistribute it
 freely, subject to the following restrictions:
 
-  1. The origin of this software must not be misrepresented; you must not 
+  1. The origin of this software must not be misrepresented; you must not
      claim that you wrote the original software. If you use this software
      in a product, an acknowledgment in the product documentation would
      be appreciated but is not required.
