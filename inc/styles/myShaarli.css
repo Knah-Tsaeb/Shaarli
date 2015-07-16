@@ -271,13 +271,13 @@ a, .linkdescription a {
 }
 
 #pageheader #logo {
-  background-image: url(../../images/logo.png);
+  background-image: url(../../images/logo_myShaarli.png);
   background-repeat: no-repeat;
   cursor: pointer;
   float: left;
-  height: 50px;
+  height: 45px;
   margin: 0 10px;
-  width: 105px;
+  width: 120px;
 }
 
 #pageheader {
