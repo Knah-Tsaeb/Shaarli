@@ -10,4 +10,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_32.png#" />
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_16.png#" />
 <link type="text/css" rel="stylesheet" href="inc/styles/{$theme}.css?version={$version|urlencode}#" />
-{if condition="is_file('inc/user.css')"}<link type="text/css" rel="stylesheet" href="inc/user.css?version={$version}#" />{/if}
+{if condition="is_file('inc/user.css')"}
+<link type="text/css" rel="stylesheet" href="inc/user.css?version={$version}#" />
+{/if}

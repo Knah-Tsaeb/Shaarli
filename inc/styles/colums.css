@@ -377,6 +377,12 @@ a, .linkdescription a {
   width: 2em;
 }
 
+.removeTag {
+  border-left: 1px solid #aaa;
+  color: #6767A7;
+  padding-left: .2em;
+}
+
 .tagfilter input.bigbutton, .searchform input.bigbutton, .addform input.bigbutton {
   background: linear-gradient(#dedede,#ffffff);
   background-color: #dedede;

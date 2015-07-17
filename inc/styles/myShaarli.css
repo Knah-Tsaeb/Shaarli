@@ -652,6 +652,12 @@ a, .linkdescription a {
   text-decoration: underline;
 }
 
+.removeTag {
+  border-left: 1px solid #aaa;
+  color: #6767A7;
+  padding-left: .2em;
+}
+
 .markdownHelp {
   background-color: #FFFFFF;
   padding: .3em;
@@ -1090,7 +1096,7 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
   }
 }
 
-@media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 854px) {
+@media handheld, only screen and (max-width: 480px) , only screen and (max-device-width: 854px) {
   #pageheader a {
     border-radius: 5px 5px 5px 5px;
     margin: 3px;

@@ -10,7 +10,7 @@
   <body>
     <div id="pageheader">
       {include="page.header"}
-      <form method="POST" action="" name="changetag" id="editlinkform">
+      <form method="post" name="changetag" id="editlinkform">
         <fieldset>
           <legend>
             Rename tag
@@ -43,7 +43,15 @@
           </p>
         </fieldset>
       </form>
-      <script>
+    </div>
+    {include="page.footer"}
+    {if="($GLOBALS['config']['OPEN_SHAARLI'] || isLoggedIn()) && empty($GLOBALS['disablejquery'])"}
+    <script>
+      $(document).ready(function() {
+        $('.fromtag').autocomplete({
+          source : '{$source}?ws=singletag',
+          minLength : 1
+        });
         function confirmDeleteTag() {
           var agree = confirm("Are you sure you want to delete this tag from all links ?");
           if (agree) {
@@ -52,16 +60,6 @@
             return false;
           }
         }
-      </script>
-    </div>
-    {include="page.footer"}
-    {if="($GLOBALS['config']['OPEN_SHAARLI'] || isLoggedIn()) && empty($GLOBALS['disablejquery'])"}
-    <script language="JavaScript">
-      $(document).ready(function() {
-        $('.fromtag').autocomplete({
-          source : '{$source}?ws=singletag',
-          minLength : 1
-        });
       });
     </script>
     {/if}
