@@ -990,20 +990,16 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
  */
 
 .tabs input[type=radio] {
+  left: -9999px;
   position: absolute;
   top: -9999px;
-  left: -9999px;
 }
 
 .tabs {
   float: none;
   list-style: none;
-  position: relative;
   padding: 0;
-}
-
-.tabs li {
-  display: block;
+  position: relative;
 }
 
 .tabsLabel {
@@ -1011,42 +1007,63 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
   border-radius: 5px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.5);
   color: #a2dd42;
+  cursor: pointer;
   display: block;
   font-size: 1.1em;
-  cursor: pointer;
+  padding: .3em .6em;
   position: relative;
   top: 3px;
   transition: all .2s ease-in-out;
-  padding: .3em .6em;
 }
 
-.tabsLabel:hover {
-  color: #ffffc9;
+.tab-content {
+  -moz-animation-duration: .5s;
+  -o-animation-duration: .5s;
+  -webkit-animation-duration: .5s;
+  animation-duration: .5s;
+  border: 1px solid #ccc;
+  border-radius: .3em;
+  box-sizing: border-box;
+  display: none;
+  left: 0;
+  padding: 15px;
+  text-align: left;
+  width: 100%;
+  z-index: 2;
 }
 
-[id^=tab]:checked + .tabsLabel {
-  color: #ffffc9;
+.tab-content input {
+  margin: 0 .2em;
 }
 
-[id^=tab]:checked ~
+.tab-content p {
+  align-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.tab-content input[type=text] {
+  align-items: center;
+  flex: 100 1 auto;
+  height: 1.1em;
+}
+
+.tab-content label {
+  align-items: center;
+  flex: 0 1 auto;
+  height: 1.1em;
+}
+
+.tabs li,[id^=tab]:checked ~
 [id^=tab-content] {
   display: block;
 }
 
-.tab-content {
-  z-index: 2;
-  display: none;
-  text-align: left;
-  width: 100%;
-  left: 0;
-  box-sizing: border-box;
-  -webkit-animation-duration: .5s;
-  -o-animation-duration: .5s;
-  -moz-animation-duration: .5s;
-  animation-duration: .5s;
-  border: 1px solid #ccc;
-  border-radius: .3em;
-  padding: 15px;
+.tabsLabel:hover, [id^=tab]:checked + .tabsLabel {
+  color: #ffffc9;
 }
 
 @media print {
@@ -1105,7 +1122,7 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
     font-style: italic;
   }
 }
-@media handheld, only screen and (max-width: 1024px), only screen and (max-device-width: 1024px) {
+@media handheld, only screen and (max-width: 1024px) , only screen and (max-device-width: 1024px) {
   #linklist li, #linklist li.private {
     background: #fff none repeat scroll 0 0;
     border: 1px solid #cdcdcd;
@@ -1119,7 +1136,7 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
   }
 }
 
-@media handheld, only screen and (max-width: 800px), only screen and (max-device-width: 800px) {
+@media handheld, only screen and (max-width: 800px) , only screen and (max-device-width: 800px) {
   #linklist li, #linklist li.private {
     background: #fff none repeat scroll 0 0;
     border: 1px solid #cdcdcd;
@@ -1133,7 +1150,7 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
   }
 }
 
-@media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+@media handheld, only screen and (max-width: 480px) , only screen and (max-device-width: 480px) {
   #pageheader a {
     border-radius: 5px 5px 5px 5px;
     margin: 3px;
