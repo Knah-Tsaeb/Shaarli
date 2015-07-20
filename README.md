@@ -27,7 +27,7 @@ Features:
  * “Daily” RSS feed: Get each day a digest of all new links.
  * [PubSubHubbub](https://code.google.com/p/pubsubhubbub/) protocol support
  * Easy backup (Data stored in a single file)
- * Compact storage (1315 links stored in 150 kb)
+ * Compact storage (1320 links stored in 299 ko)
  * Mobile browsers support
  * Also works with javascript disabled
  * Can import/export Netscape bookmarks (for import/export from/to Firefox, Opera, Chrome, Delicious…)
@@ -45,7 +45,7 @@ myShaarli Features :
  * Define external thumbnailer
  * Add favicon
  * Better configuration page
- * Theme support
+ * Template support
  * Add extra field for origin of link
  * New default theme
  * Add link to archive.org (qwertygc https://github.com/nodiscc/Shaarli/commit/b113dc8e6bba052883297ab575dd36fd3073805e)
@@ -54,6 +54,7 @@ myShaarli Features :
  * Few small fix
  * You can upgrade original Shaarli to myShaarli without lost your data
  * You can define url origin of update
+ * Change date/time format
 
 Requires php 5.1
 
