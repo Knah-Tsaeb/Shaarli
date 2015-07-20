@@ -1493,7 +1493,7 @@ function renderPage()
             $GLOBALS['config']['contactLink'] = $_POST['contactLink'];
             $_SESSION['LINKS_PER_PAGE'] = (int)$_POST['linkPerPage'];
             writeConfig();
-            echo '<script>alert("Configuration was saved.");document.location=\'?do=tools\';</script>';
+            echo '<script>alert("Configuration was saved.");document.location=\'?do=configure\';</script>';
             exit;
         }
         else // Show the configuration form.
@@ -1507,7 +1507,12 @@ function renderPage()
             list($timezone_form,$timezone_js) = templateTZform($GLOBALS['timezone']);
             $PAGE->assign('timezone_form',$timezone_form); // FIXME: put entire tz form generation in template ?
             $PAGE->assign('timezone_js',$timezone_js);
-            $PAGE->renderPage('configure');
+            if($_GET['config'] === 'myshaarli'){
+              raintpl::$tpl_dir = 'tpl/myShaarli/';
+              $PAGE->renderPage('configure');
+            } else {
+              $PAGE->renderPage('configure');
+            }
             exit;
         }
     }
@@ -2152,7 +2157,7 @@ function lazyThumbnail($url,$href=false)
     if (!empty($GLOBALS['disablejquery'])) // (except if jQuery is disabled)
         $html.='<img class="lazyimage" src="'.htmlspecialchars($t['src']).'"';
     else
-        $html.='<img class="lazyimage" src="#" data-original="'.htmlspecialchars($t['src']).'"';
+        $html.='<img class="b-lazy" src="#" data-original="'.htmlspecialchars($t['src']).'" data-src="'.htmlspecialchars($t['src']).'"';
 
     if (!empty($t['width']))  $html.=' width="'.htmlspecialchars($t['width']).'"';
     if (!empty($t['height'])) $html.=' height="'.htmlspecialchars($t['height']).'"';
