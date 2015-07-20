@@ -8,6 +8,8 @@
     <div id="pageheader">
       {include="page.header"}
       {$timezone_js}
+    </div>
+    <div>
       <form method="post" action="" name="configform" id="configform">
         <ul class="tabs">
           <li>
@@ -86,6 +88,10 @@
               <p>
                 <label for="hideTimestamps">Hide timestamps : </label>
                 <input type="checkbox" name="hideTimestamps" id="hideTimestamps" {if="!empty($GLOBALS['config']['HIDE_TIMESTAMPS'])"}checked{/if}/>
+              </p>
+              <p>
+                <label for="dateFormat">Date Format : </label>
+                <input type="text" name="dateFormat" id="dateFormat" value="{$GLOBALS['config']['DATE_FORMAT']}"/><label>See <a href="http://php.net/manual/en/function.strftime.php">PHP documentation</a></label>
               </p>
             </div>
           </li>

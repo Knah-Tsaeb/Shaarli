@@ -75,7 +75,7 @@
               <a href="{$value.via}">Origine => {$value.via|getJustDomain}</a>
             </div>{/if}
             {if="!$GLOBALS['config']['HIDE_TIMESTAMPS'] || isLoggedIn()"}
-            <span class="linkdate linkBottom" title="Permalink"><a href="?{$value.linkdate|smallHash}">{$value.localdate|htmlspecialchars} - permalink</a> - </span>
+            <span class="linkdate linkBottom" title="Permalink"><a href="?{$value.linkdate|smallHash}">{function="ucfirst(htmlspecialchars($value.localdate))"} - permalink</a> - </span>
             {else}
             <span class="linkdate linkBottom" title="Short link here"><a href="?{$value.linkdate|smallHash}">permalink</a> - </span>
             {/if}

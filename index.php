@@ -41,6 +41,7 @@ $GLOBALS['config']['ENABLE_MARKDOWN'] = TRUE;
 $GLOBALS['config']['WALLABAG_URL'] = '';
 $GLOBALS['config']['contactLink'] = ''; // Define link for contact Example : http://example.com/contact.php or mailo:contact@example.com
 $GLOBALS['config']['THEME'] = 'myShaarli';
+$GLOBALS['config']['DATE_FORMAT'] = '%A %d %B %Y %T'; // see http://php.net/manual/en/function.strftime.php for more example
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
@@ -295,8 +296,8 @@ function autoLocale()
         if (preg_match('/([a-z]{2})-?([a-z]{2})?/i',$_SERVER['HTTP_ACCEPT_LANGUAGE'],$matches)) {
             $loc = $matches[1] . (!empty($matches[2]) ? '_' . strtoupper($matches[2]) : '');
             $attempts = array($loc.'.UTF-8', $loc, str_replace('_', '-', $loc).'.UTF-8', str_replace('_', '-', $loc),
-                $loc . '_' . strtoupper($loc).'.UTF-8', $loc . '_' . strtoupper($loc), 
-                $loc . '_' . $loc.'.UTF-8', $loc . '_' . $loc, $loc . '-' . strtoupper($loc).'.UTF-8', 
+                $loc . '_' . strtoupper($loc).'.UTF-8', $loc . '_' . strtoupper($loc),
+                $loc . '_' . $loc.'.UTF-8', $loc . '_' . $loc, $loc . '-' . strtoupper($loc).'.UTF-8',
                 $loc . '-' . strtoupper($loc), $loc . '-' . $loc.'.UTF-8', $loc . '-' . $loc);
         }
     }
@@ -585,7 +586,10 @@ function linkdate2iso8601($linkdate)
     The date format is automatically chosen according to locale/languages sniffed from browser headers (see autoLocale()). */
 function linkdate2locale($linkdate)
 {
-    return utf8_encode(strftime('%c',linkdate2timestamp($linkdate))); // %c is for automatic date format according to locale.
+  if(empty($GLOBALS['config']['DATE_FORMAT'])){
+    $GLOBALS['config']['DATE_FORMAT'] = '%c';
+  }
+    return utf8_encode(strftime($GLOBALS['config']['DATE_FORMAT'],linkdate2timestamp($linkdate))); // %c is for automatic date format according to locale.
     // Note that if you use a local which is not installed on your webserver,
     // the date will not be displayed in the chosen locale, but probably in US notation.
 }
@@ -1109,7 +1113,7 @@ function showATOM()
         $feed.='<link rel="hub" href="'.htmlspecialchars($GLOBALS['config']['PUBSUBHUB_URL']).'" />';
         $feed.='<!-- End Of PubSubHubbub Discovery -->';
     }
-    $feed.='<author><name>'.htmlspecialchars($pageaddr).'</name><uri>'.htmlspecialchars($pageaddr).'</uri></author>';
+    $feed.='<author><name>'.htmlspecialchars($pageaddr).'<\name><uri>'.htmlspecialchars($pageaddr).'</uri></author>';
     $feed.='<id>'.htmlspecialchars($pageaddr).'</id>'."\n\n"; // Yes, I know I should use a real IRI (RFC3987), but the site URL will do.
     $feed.=$entries;
     $feed.='</feed><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
@@ -1498,6 +1502,7 @@ function renderPage()
             $GLOBALS['config']['externalThumbshot'] = $_POST['externalThumbshot'];
             $GLOBALS['config']['contactLink'] = $_POST['contactLink'];
             $_SESSION['LINKS_PER_PAGE'] = (int)$_POST['linkPerPage'];
+            $GLOBALS['config']['DATE_FORMAT'] = strip_tags($_POST['dateFormat']);
             writeConfig();
             echo '<script>alert("Configuration was saved.");document.location=\'?do=configure\';</script>';
             exit;
@@ -2177,7 +2182,7 @@ function lazyThumbnail($url,$href=false)
     if (!empty($t['height'])) $html.=' height="'.htmlspecialchars($t['height']).'"';
     if (!empty($t['style']))  $html.=' style="'.htmlspecialchars($t['style']).'"';
     if (!empty($t['alt']))    $html.=' alt="'.htmlspecialchars($t['alt']).'"';
-    $html.='></noscript></a>';
+    $html.='><\noscript></a>';
 
     return $html;
 }
@@ -2431,27 +2436,32 @@ function getAllTheme(){
 function writeConfig()
 {
     if (is_file($GLOBALS['config']['CONFIG_FILE']) && !isLoggedIn()) die('You are not authorized to alter config.'); // Only logged in user can alter config.
-    $config='<?php $GLOBALS[\'login\']='.var_export($GLOBALS['login'],true).'; $GLOBALS[\'hash\']='.var_export($GLOBALS['hash'],true).'; $GLOBALS[\'salt\']='.var_export($GLOBALS['salt'],true).'; ';
-    $config .='$GLOBALS[\'timezone\']='.var_export($GLOBALS['timezone'],true).'; date_default_timezone_set('.var_export($GLOBALS['timezone'],true).'); $GLOBALS[\'title\']='.var_export($GLOBALS['title'],true).';';
-    $config .= '$GLOBALS[\'titleLink\']='.var_export($GLOBALS['titleLink'],true).'; ';
-    $config .= '$GLOBALS[\'redirector\']='.var_export($GLOBALS['redirector'],true).'; ';
-    $config .= '$GLOBALS[\'disablesessionprotection\']='.var_export($GLOBALS['disablesessionprotection'],true).'; ';
-    $config .= '$GLOBALS[\'disablejquery\']='.var_export($GLOBALS['disablejquery'],true).'; ';
-    $config .= '$GLOBALS[\'privateLinkByDefault\']='.var_export($GLOBALS['privateLinkByDefault'],true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'ENABLE_RSS_PERMALINKS\']='.var_export($GLOBALS['config']['ENABLE_RSS_PERMALINKS'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'ENABLE_UPDATECHECK\']='.var_export($GLOBALS['config']['ENABLE_UPDATECHECK'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'ENABLE_MARKDOWN\']='.var_export($GLOBALS['config']['ENABLE_MARKDOWN'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'BAN_AFTER\']='.var_export($GLOBALS['config']['BAN_AFTER'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'BAN_DURATION\']='.var_export($GLOBALS['config']['BAN_DURATION'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'THEME\']='.var_export($GLOBALS['config']['THEME'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'LINKS_PER_PAGE\']='.var_export($GLOBALS['config']['LINKS_PER_PAGE'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'HIDE_TIMESTAMPS\']='.var_export($GLOBALS['config']['HIDE_TIMESTAMPS'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'ENABLE_THUMBNAILS\']='.var_export($GLOBALS['config']['ENABLE_THUMBNAILS'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'ENABLE_FAVICON\']='.var_export($GLOBALS['config']['ENABLE_FAVICON'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'ENABLE_LOCALCACHE\']='.var_export($GLOBALS['config']['ENABLE_LOCALCACHE'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'externalThumbshot\']='.var_export($GLOBALS['config']['externalThumbshot'], true).'; ';
-    $config .= '$GLOBALS[\'config\'][\'contactLink\']='.var_export($GLOBALS['config']['contactLink'], true).'; ';
-    $config .= ' ?>';
+    $config = "<?php\n";
+    $config .= '$GLOBALS[\'login\']='.var_export($GLOBALS['login'],true).';'."\n";
+    $confog .= '$GLOBALS[\'hash\'] = '.var_export($GLOBALS['hash'],true).';'."\n";
+    $config .= '$GLOBALS[\'salt\']='.var_export($GLOBALS['salt'],true).';'."\n";
+    $config .='$GLOBALS[\'timezone\'] = '.var_export($GLOBALS['timezone'],true).';'."\n";
+    $config .= 'date_default_timezone_set('.var_export($GLOBALS['timezone'],true).');'."\n";
+    $confif .= '$GLOBALS[\'title\']='.var_export($GLOBALS['title'],true).';'."\n";
+    $config .= '$GLOBALS[\'titleLink\'] = '.var_export($GLOBALS['titleLink'],true).';'."\n";
+    $config .= '$GLOBALS[\'redirector\'] = '.var_export($GLOBALS['redirector'],true).';'."\n";
+    $config .= '$GLOBALS[\'disablesessionprotection\'] = '.var_export($GLOBALS['disablesessionprotection'],true).';'."\n";
+    $config .= '$GLOBALS[\'disablejquery\'] = '.var_export($GLOBALS['disablejquery'],true).';'."\n";
+    $config .= '$GLOBALS[\'privateLinkByDefault\'] = '.var_export($GLOBALS['privateLinkByDefault'],true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_RSS_PERMALINKS\'] = '.var_export($GLOBALS['config']['ENABLE_RSS_PERMALINKS'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_UPDATECHECK\'] = '.var_export($GLOBALS['config']['ENABLE_UPDATECHECK'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_MARKDOWN\'] = '.var_export($GLOBALS['config']['ENABLE_MARKDOWN'], true).';'."\n";;
+    $config .= '$GLOBALS[\'config\'][\'BAN_AFTER\'] = '.var_export($GLOBALS['config']['BAN_AFTER'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'BAN_DURATION\'] = '.var_export($GLOBALS['config']['BAN_DURATION'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'THEME\'] = '.var_export($GLOBALS['config']['THEME'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'LINKS_PER_PAGE\'] = '.var_export($GLOBALS['config']['LINKS_PER_PAGE'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'HIDE_TIMESTAMPS\'] = '.var_export($GLOBALS['config']['HIDE_TIMESTAMPS'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_THUMBNAILS\'] = '.var_export($GLOBALS['config']['ENABLE_THUMBNAILS'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_FAVICON\'] = '.var_export($GLOBALS['config']['ENABLE_FAVICON'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_LOCALCACHE\'] = '.var_export($GLOBALS['config']['ENABLE_LOCALCACHE'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'externalThumbshot\'] = '.var_export($GLOBALS['config']['externalThumbshot'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'contactLink\'] = '.var_export($GLOBALS['config']['contactLink'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'DATE_FORMAT\'] = '.var_export($GLOBALS['config']['DATE_FORMAT'], true).';'."\n";
     if (!file_put_contents($GLOBALS['config']['CONFIG_FILE'],$config) || strcmp(file_get_contents($GLOBALS['config']['CONFIG_FILE']),$config)!=0)
     {
         echo '<script>alert("Shaarli could not create the config file. Please make sure Shaarli has the right to write in the folder is it installed in.");document.location=\'?\';</script>';
