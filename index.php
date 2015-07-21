@@ -2182,7 +2182,7 @@ function lazyThumbnail($url,$href=false)
     if (!empty($t['height'])) $html.=' height="'.htmlspecialchars($t['height']).'"';
     if (!empty($t['style']))  $html.=' style="'.htmlspecialchars($t['style']).'"';
     if (!empty($t['alt']))    $html.=' alt="'.htmlspecialchars($t['alt']).'"';
-    $html.='><\noscript></a>';
+    $html.='></noscript></a>';
 
     return $html;
 }
