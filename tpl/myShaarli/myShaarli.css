@@ -270,7 +270,7 @@ a, .linkdescription a {
   position: relative;
 }
 
-#pageheader #logo {
+#logo {
   background-image: url(../../images/logo_myShaarli.png);
   background-repeat: no-repeat;
   cursor: pointer;
@@ -715,13 +715,6 @@ a, .linkdescription a {
   text-decoration: none;
 }
 
-#installform td {
-  clear: left;
-  color: black;
-  font-size: 10pt;
-  padding: 10px 5px;
-}
-
 .thumbnail {
   float: left;
   margin: 0;
@@ -962,6 +955,10 @@ a:hover, .linkdescription a:hover, .linktitle a:hover, .linkWallabag a:hover, .l
 
 #configform label {
   font-weight: bold;
+}
+
+#configform h3 {
+  color: #ffffff;
 }
 
 .picwall_pictureframe span.info, .lazyimage {
