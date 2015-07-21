@@ -38,6 +38,10 @@ Features:
  * You will be automatically notified by a discreet popup if a new version is available
  * Pages are easy to customize (using CSS and simple RainTPL templates)
 
+More information on the project page:
+http://sebsauvage.net/wiki/doku.php?id=php:shaarli
+
+![my Shaarli logo](http://img.knah-tsaeb.org/photos/shaarli/logo_fullsize.png)
 
 myShaarli Features :
 
@@ -56,10 +60,12 @@ myShaarli Features :
  * You can define url origin of update
  * Change date/time format
 
+More information on the project page:
+https://forge.leslibres.org/projects/shaarli
+
+
 Requires php 5.1
 
-More information on the project page:
-http://sebsauvage.net/wiki/doku.php?id=php:shaarli
 
 ------------------------------------------------------------------------------
 

@@ -53,7 +53,7 @@ if (is_file($GLOBALS['config']['DATADIR'].'/options.php')){
   require($GLOBALS['config']['DATADIR'].'/options.php');
 }
 
-define('myShaarli_version','1.1.0 beta');
+define('myShaarli_version','1.1.0');
 define('PHPPREFIX','<?php /* '); // Prefix to encapsulate data in php code.
 define('PHPSUFFIX',' */ ?>'); // Suffix to encapsulate data in php code.
 // http://server.com/x/shaarli --> /shaarli/
