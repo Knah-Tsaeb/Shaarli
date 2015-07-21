@@ -45,10 +45,9 @@ $GLOBALS['config']['DATE_FORMAT'] = '%A %d %B %Y %T'; // see http://php.net/manu
 // -----------------------------------------------------------------------------------------------
 // You should not touch below (or at your own risks !)
 // Optionnal config file.
-// Run config screen if first run:
-if (!is_file($GLOBALS['config']['CONFIG_FILE'])) install();
-
-require $GLOBALS['config']['CONFIG_FILE'];  // Read login/password hash into $GLOBALS.
+if(file_exists($GLOBALS['config']['CONFIG_FILE'])){
+  require $GLOBALS['config']['CONFIG_FILE'];  // Read login/password hash into $GLOBALS.
+}
 
 if (is_file($GLOBALS['config']['DATADIR'].'/options.php')){
   require($GLOBALS['config']['DATADIR'].'/options.php');
@@ -128,6 +127,9 @@ if (empty($GLOBALS['disablesessionprotection'])) $GLOBALS['disablesessionprotect
 if (empty($GLOBALS['disablejquery'])) $GLOBALS['disablejquery']=false;
 if (empty($GLOBALS['privateLinkByDefault'])) $GLOBALS['privateLinkByDefault']=false;
 if (empty($GLOBALS['titleLink'])) $GLOBALS['titleLink']='?';
+
+// Run config screen if first run:
+if (!is_file($GLOBALS['config']['CONFIG_FILE'])) install();
 
 // a token depending of deployment salt, user password, and the current ip
 define('STAY_SIGNED_IN_TOKEN', sha1($GLOBALS['hash'].$_SERVER["REMOTE_ADDR"].$GLOBALS['salt']));
@@ -2438,11 +2440,11 @@ function writeConfig()
     if (is_file($GLOBALS['config']['CONFIG_FILE']) && !isLoggedIn()) die('You are not authorized to alter config.'); // Only logged in user can alter config.
     $config = "<?php\n";
     $config .= '$GLOBALS[\'login\']='.var_export($GLOBALS['login'],true).';'."\n";
-    $confog .= '$GLOBALS[\'hash\'] = '.var_export($GLOBALS['hash'],true).';'."\n";
+    $config .= '$GLOBALS[\'hash\'] = '.var_export($GLOBALS['hash'],true).';'."\n";
     $config .= '$GLOBALS[\'salt\']='.var_export($GLOBALS['salt'],true).';'."\n";
     $config .='$GLOBALS[\'timezone\'] = '.var_export($GLOBALS['timezone'],true).';'."\n";
     $config .= 'date_default_timezone_set('.var_export($GLOBALS['timezone'],true).');'."\n";
-    $confif .= '$GLOBALS[\'title\']='.var_export($GLOBALS['title'],true).';'."\n";
+    $config .= '$GLOBALS[\'title\']='.var_export($GLOBALS['title'],true).';'."\n";
     $config .= '$GLOBALS[\'titleLink\'] = '.var_export($GLOBALS['titleLink'],true).';'."\n";
     $config .= '$GLOBALS[\'redirector\'] = '.var_export($GLOBALS['redirector'],true).';'."\n";
     $config .= '$GLOBALS[\'disablesessionprotection\'] = '.var_export($GLOBALS['disablesessionprotection'],true).';'."\n";
