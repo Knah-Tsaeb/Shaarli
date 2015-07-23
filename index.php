@@ -53,7 +53,7 @@ if (is_file($GLOBALS['config']['DATADIR'].'/options.php')){
   require($GLOBALS['config']['DATADIR'].'/options.php');
 }
 
-define('myShaarli_version','1.1.0');
+define('myShaarli_version','1.1.1');
 define('PHPPREFIX','<?php /* '); // Prefix to encapsulate data in php code.
 define('PHPSUFFIX',' */ ?>'); // Suffix to encapsulate data in php code.
 // http://server.com/x/shaarli --> /shaarli/
@@ -1005,10 +1005,10 @@ function showRSS()
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = '(<a href="'.$absurl.'">Link</a>)';
         if (strlen($link['description'])>0){
-          $descriptionlink = '<br>'.$descriptionlink;
+          $descriptionlink = $descriptionlink;
         }
         if(!empty($link['via'])){
-          $via = '<br>Origine => <a href="'.htmlspecialchars($link['via']).'">'.htmlspecialchars(getJustDomain($link['via'])).'</a>';
+          $via = 'Origin => <a href="'.htmlspecialchars($link['via']).'">'.htmlspecialchars(getJustDomain($link['via'])).'</a><br/>';
         } else {
          $via = '';
         }
@@ -1084,18 +1084,18 @@ function showATOM()
         // Add permalink in description
         $descriptionlink = htmlspecialchars('(<a href="'.$guid.'">Permalink</a>)');
         if(isset($link['via']) && !empty($link['via'])){
-          $via = htmlspecialchars('</br> Origine => <a href="'.$link['via'].'">'.getJustDomain($link['via']).'</a>');
+          $via = htmlspecialchars('Origin => <a href="'.$link['via'].'">'.getJustDomain($link['via']).'</a><br/>');
         } else {
           $via = '';
         }
         // If user wants permalinks first, put the final link in description
         if ($usepermalinks===true) $descriptionlink = htmlspecialchars('(<a href="'.$absurl.'">Link</a>)');
-        if (strlen($link['description'])>0) $descriptionlink = '&lt;br&gt;'.$descriptionlink;
+        if (strlen($link['description'])>0) $descriptionlink = $descriptionlink;
         if($GLOBALS['config']['ENABLE_MARKDOWN'] === TRUE){
           $Parsedown = new Parsedown();
-          $entries.='<content type="html">'.htmlspecialchars($Parsedown->setMarkupEscaped(true)->setBreaksEnabled(true)->text($link['description'])).' '.$descriptionlink.$via."</content>\n";
+          $entries.='<content type="html">'.htmlspecialchars($Parsedown->setMarkupEscaped(true)->setBreaksEnabled(true)->text($link['description'])).' '.$via.$descriptionlink."</content>\n";
         } else {
-          $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$descriptionlink.$via."</content>\n";
+          $entries.='<content type="html">'.htmlspecialchars(nl2br(keepMultipleSpaces(text2clickable(htmlspecialchars($link['description']))))).$via.$descriptionlink."</content>\n";
         }
         if ($link['tags']!='') // Adding tags to each ATOM entry (as mentioned in ATOM specification)
         {
