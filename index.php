@@ -1115,7 +1115,7 @@ function showATOM()
         $feed.='<link rel="hub" href="'.htmlspecialchars($GLOBALS['config']['PUBSUBHUB_URL']).'" />';
         $feed.='<!-- End Of PubSubHubbub Discovery -->';
     }
-    $feed.='<author><name>'.htmlspecialchars($pageaddr).'<\name><uri>'.htmlspecialchars($pageaddr).'</uri></author>';
+    $feed.='<author><name>'.htmlspecialchars($pageaddr).'</name><uri>'.htmlspecialchars($pageaddr).'</uri></author>';
     $feed.='<id>'.htmlspecialchars($pageaddr).'</id>'."\n\n"; // Yes, I know I should use a real IRI (RFC3987), but the site URL will do.
     $feed.=$entries;
     $feed.='</feed><!-- Cached version of '.htmlspecialchars(pageUrl()).' -->';
@@ -2270,7 +2270,7 @@ function install()
         $GLOBALS['hash'] = sha1($_POST['setpassword'].$GLOBALS['login'].$GLOBALS['salt']);
         $GLOBALS['title'] = (empty($_POST['title']) ? 'Shared links on '.htmlspecialchars(indexUrl()) : $_POST['title'] );
         $GLOBALS['config']['ENABLE_UPDATECHECK'] = !empty($_POST['updateCheck']);
-        //writeConfig();
+        writeConfig();
         echo '<script>alert("Shaarli is now configured. Please enter your login/password and start shaaring your links !");document.location=\'?do=login\';</script>';
         exit;
     }
