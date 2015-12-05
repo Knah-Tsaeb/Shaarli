@@ -2004,6 +2004,7 @@ function buildLinkList($PAGE,$LINKSDB)
     $PAGE->assign('next_page_url',$next_page_url);
     $PAGE->assign('page_current',$page);
     $PAGE->assign('page_max',$pagecount);
+    $PAGE->assign('pagetitle', $GLOBALS['pagetitle']);
     $PAGE->assign('result_count',count($linksToDisplay));
     $PAGE->assign('search_type',$search_type);
     $PAGE->assign('search_crits',$search_crits);
