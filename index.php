@@ -248,7 +248,7 @@ class pageCache
 // Log to text file
 function logm($message)
 {
-    $t = strval(date('Y/m/d_H:i:s')).' - '.$_SERVER["REMOTE_ADDR"].' - '.strval($message)."\n";
+    $t = strval(date('Y/m/d H:i:s')).' - '.$_SERVER["REMOTE_ADDR"].' - '.strval($message)."\n";
     file_put_contents($GLOBALS['config']['DATADIR'].'/log.txt',$t,FILE_APPEND);
 }
 
