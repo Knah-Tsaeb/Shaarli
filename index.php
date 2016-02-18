@@ -54,7 +54,7 @@ if (is_file($GLOBALS['config']['DATADIR'].'/options.php')){
   require($GLOBALS['config']['DATADIR'].'/options.php');
 }
 
-define('myShaarli_version','1.1.1');
+define('myShaarli_version','1.1.2');
 define('PHPPREFIX','<?php /* '); // Prefix to encapsulate data in php code.
 define('PHPSUFFIX',' */ ?>'); // Suffix to encapsulate data in php code.
 // http://server.com/x/shaarli --> /shaarli/
@@ -592,7 +592,7 @@ function linkdate2locale($linkdate)
   if(empty($GLOBALS['config']['DATE_FORMAT'])){
     $GLOBALS['config']['DATE_FORMAT'] = '%c';
   }
-    return utf8_encode(strftime($GLOBALS['config']['DATE_FORMAT'],linkdate2timestamp($linkdate))); // %c is for automatic date format according to locale.
+    return strftime($GLOBALS['config']['DATE_FORMAT'],linkdate2timestamp($linkdate)); // %c is for automatic date format according to locale.
     // Note that if you use a local which is not installed on your webserver,
     // the date will not be displayed in the chosen locale, but probably in US notation.
 }
