@@ -55,6 +55,7 @@ myShaarli Features :
  * Add link to archive.org (qwertygc https://github.com/nodiscc/Shaarli/commit/b113dc8e6bba052883297ab575dd36fd3073805e)
  * myShaali can use Firefox social API (Marsup https://github.com/shaarli/Shaarli/commit/d33c5d4c3b9c70441391a08e8bcb2a8c639a4635)
  * myShaali can post original article to wallabag (nodiscc https://github.com/nodiscc/Shaarli/tree/new-plugin-system/tpl/plugins/wallabag)
+ * myShaali implement OpenSearch (ArthurHoaro https://github.com/shaarli/Shaarli/issues/176)
  * Few small fix
  * You can upgrade original Shaarli to myShaarli without lost your data
  * You can define url origin of update

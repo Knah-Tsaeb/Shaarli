@@ -1350,6 +1350,16 @@ function renderPage()
         exit;
     }
 
+    // Display openseach plugin (XML)
+    if (isset($_SERVER["QUERY_STRING"]) && startswith($_SERVER["QUERY_STRING"],'do=opensearch')) {
+        header('Content-Type: application/xml; charset=utf-8');
+        $PAGE = new pageBuilder;
+        $PAGE->assign('serverurl', $GLOBALS['title']);
+        $PAGE->assign('pagetitle',$GLOBALS['title']);
+        $PAGE->renderPage('opensearch');
+        exit;
+    }
+
     // -------- User clicks on a tag in a link: The tag is added to the list of searched tags (searchtags=...)
     if (isset($_GET['addtag']))
     {
