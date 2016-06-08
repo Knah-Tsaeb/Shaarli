@@ -33,7 +33,7 @@ $GLOBALS['config']['PUBSUBHUB_URL'] = ''; // PubSubHubbub support. Put an empty 
 $GLOBALS['config']['UPDATECHECK_FILENAME'] = $GLOBALS['config']['DATADIR'].'/lastupdatecheck.txt'; // For updates check of Shaarli.
 $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400 ; // Updates check frequency for Shaarli. 86400 seconds=24 hours
 $GLOBALS['config']['UPDATECHECK_URL'] = 'http://book.knah-tsaeb.org/shaarli_version.txt'; // Define last version of myShaarli
-$GLOBALS['config']['UPDATECHECK_DOWNLOAD'] = 'https://forge.leslibres.org/projects/shaarli/repository';
+$GLOBALS['config']['UPDATECHECK_DOWNLOAD'] = 'https://forge.leslibres.org/Knah-Tsaeb/MyShaarli';
 $GLOBALS['config']['ENABLE_UPDATECHECK'] = TRUE;
 $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // exemple : http://images.thumbshots.com/image.aspx?cid=dgdfgdfg&v=1&w=120&url=
@@ -172,14 +172,14 @@ function checkUpdate()
           file_put_contents($GLOBALS['config']['UPDATECHECK_FILENAME'],$version); // touch file date
         }
     // Compare versions:
-    $newestversion=file_get_contents($GLOBALS['config']['UPDATECHECK_FILENAME']);
-    if (version_compare(myShaarli_version,$newestversion)==0){
+    $newestversion=trim(file_get_contents($GLOBALS['config']['UPDATECHECK_FILENAME']));
+    if (version_compare( strtolower(myShaarli_version), strtolower($newestversion))==0){
       return false;
     }
-    if (version_compare(myShaarli_version,$newestversion)==1){
+    if (version_compare( strtolower(myShaarli_version), strtolower($newestversion))==1){
       return 'You have future version ?!';
     }
-    if (version_compare(myShaarli_version,$newestversion)==-1){
+    if (version_compare( strtolower(myShaarli_version), strtolower($newestversion))==-1){
       return 'New update of myShaarli available.';
     }
     return false;

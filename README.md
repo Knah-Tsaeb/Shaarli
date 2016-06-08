@@ -61,7 +61,7 @@ myShaarli Features :
  * Change date/time format
 
 More information on the project page:
-https://forge.leslibres.org/projects/shaarli
+https://forge.leslibres.org/Knah-Tsaeb/MyShaarli
 
 
 Requires php 5.1
