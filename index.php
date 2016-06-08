@@ -2300,6 +2300,149 @@ function install()
     exit;
 }
 
+// Generates the timezone selection form and javascript.
+// Input: (optional) current timezone (can be 'UTC/UTC'). It will be pre-selected.
+// Output: array(html,js)
+// Example: list($htmlform,$js) = templateTZform('Europe/Paris');  // Europe/Paris pre-selected.
+// Returns array('','') if server does not support timezones list. (eg. php 5.1 on free.fr)
+function templateTZform($ptz=false)
+{
+    if (function_exists('timezone_identifiers_list')) // because of old php version (5.1) which can be found on free.fr
+    {
+        // Try to split the provided timezone.
+        if ($ptz==false) { $l=timezone_identifiers_list(); $ptz=$l[0]; }
+        $spos=strpos($ptz,'/'); $pcontinent=substr($ptz,0,$spos); $pcity=substr($ptz,$spos+1);
+        // Display config form:
+        $timezone_form = '';
+        $timezone_js = '';
+        // The list is in the forme "Europe/Paris", "America/Argentina/Buenos_Aires"...
+        // We split the list in continents/cities.
+        $continents = array();
+        $cities = array();
+        foreach(timezone_identifiers_list() as $tz)
+        {
+            if ($tz=='UTC') $tz='UTC/UTC';
+            $spos = strpos($tz,'/');
+            if ($spos!==false)
+            {
+                $continent=substr($tz,0,$spos); $city=substr($tz,$spos+1);
+                $continents[$continent]=1;
+                if (!isset($cities[$continent])) $cities[$continent]='';
+                $cities[$continent].='<option value="'.$city.'"'.($pcity==$city?'selected':'').'>'.$city.'</option>';
+            }
+        }
+        $continents_html = '';
+        $continents = array_keys($continents);
+        foreach($continents as $continent)
+            $continents_html.='<option  value="'.$continent.'"'.($pcontinent==$continent?'selected':'').'>'.$continent.'</option>';
+        $cities_html = $cities[$pcontinent];
+        $timezone_form = "Continent: <select name=\"continent\" id=\"continent\" onChange=\"onChangecontinent();\">${continents_html}</select>";
+        $timezone_form .= "&nbsp;&nbsp;&nbsp;&nbsp;City: <select name=\"city\" id=\"city\">${cities[$pcontinent]}</select><br />";
+        $timezone_js = "<script>";
+        $timezone_js .= "function onChangecontinent(){document.getElementById(\"city\").innerHTML = citiescontinent[document.getElementById(\"continent\").value];}";
+        $timezone_js .= "var citiescontinent = ".json_encode($cities).";" ;
+        $timezone_js .= "</script>" ;
+        return array($timezone_form,$timezone_js);
+    }
+    return array('','');
+}
+// Tells if a timezone is valid or not.
+// If not valid, returns false.
+// If system does not support timezone list, returns false.
+function isTZvalid($continent,$city)
+{
+    $tz = $continent.'/'.$city;
+    if (function_exists('timezone_identifiers_list')) // because of old php version (5.1) which can be found on free.fr
+    {
+        if (in_array($tz, timezone_identifiers_list())) // it's a valid timezone ?
+                    return true;
+    }
+    return false;
+}
+
+// Webservices (for use with jQuery/jQueryUI)
+// eg.  index.php?ws=tags&term=minecr
+function processWS()
+{
+    if (empty($_GET['ws']) || empty($_GET['term'])) return;
+    $term = $_GET['term'];
+    $LINKSDB=new linkdb(isLoggedIn() || $GLOBALS['config']['OPEN_SHAARLI']);  // Read links from database (and filter private links if used it not logged in).
+    header('Content-Type: application/json; charset=utf-8');
+    // Search in tags (case insentitive, cumulative search)
+    if ($_GET['ws']=='tags')
+    {
+        $tags=explode(' ',str_replace(',',' ',$term)); $last = array_pop($tags); // Get the last term ("a b c d" ==> "a b c", "d")
+        $addtags=''; if ($tags) $addtags=implode(' ',$tags).' '; // We will pre-pend previous tags
+        $suggested=array();
+        /* To speed up things, we store list of tags in session */
+        if (empty($_SESSION['tags'])) $_SESSION['tags'] = $LINKSDB->allTags();
+        foreach($_SESSION['tags'] as $key=>$value)
+        {
+            if (startsWith($key,$last,$case=false) && !in_array($key,$tags)) $suggested[$addtags.$key.' ']=0;
+        }
+        echo json_encode(array_keys($suggested));
+        exit;
+    }
+    // Search a single tag (case sentitive, single tag search)
+    if ($_GET['ws']=='singletag')
+    {
+        /* To speed up things, we store list of tags in session */
+        if (empty($_SESSION['tags'])) $_SESSION['tags'] = $LINKSDB->allTags();
+        foreach($_SESSION['tags'] as $key=>$value)
+        {
+            if (startsWith($key,$term,$case=true)) $suggested[$key]=0;
+        }
+        echo json_encode(array_keys($suggested));
+        exit;
+    }
+}
+function getAllTheme(){
+  $allTheme = glob('tpl/*', GLOB_ONLYDIR);
+  foreach ($allTheme as $value) {
+	 $themes[] = str_replace('tpl/', '', $value);
+  }
+  return $themes;
+}
+// Re-write configuration file according to globals.
+// Requires some $GLOBALS to be set (login,hash,salt,title).
+// If the config file cannot be saved, an error message is dislayed and the user is redirected to "Tools" menu.
+// (otherwise, the function simply returns.)
+function writeConfig()
+{
+    if (is_file($GLOBALS['config']['CONFIG_FILE']) && !isLoggedIn()) die('You are not authorized to alter config.'); // Only logged in user can alter config.
+    $config = "<?php\n";
+    $config .= '$GLOBALS[\'login\']='.var_export($GLOBALS['login'],true).';'."\n";
+    $config .= '$GLOBALS[\'hash\'] = '.var_export($GLOBALS['hash'],true).';'."\n";
+    $config .= '$GLOBALS[\'salt\']='.var_export($GLOBALS['salt'],true).';'."\n";
+    $config .='$GLOBALS[\'timezone\'] = '.var_export($GLOBALS['timezone'],true).';'."\n";
+    $config .= 'date_default_timezone_set('.var_export($GLOBALS['timezone'],true).');'."\n";
+    $config .= '$GLOBALS[\'title\']='.var_export($GLOBALS['title'],true).';'."\n";
+    $config .= '$GLOBALS[\'titleLink\'] = '.var_export($GLOBALS['titleLink'],true).';'."\n";
+    $config .= '$GLOBALS[\'redirector\'] = '.var_export($GLOBALS['redirector'],true).';'."\n";
+    $config .= '$GLOBALS[\'disablesessionprotection\'] = '.var_export($GLOBALS['disablesessionprotection'],true).';'."\n";
+    $config .= '$GLOBALS[\'disablejquery\'] = '.var_export($GLOBALS['disablejquery'],true).';'."\n";
+    $config .= '$GLOBALS[\'privateLinkByDefault\'] = '.var_export($GLOBALS['privateLinkByDefault'],true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_RSS_PERMALINKS\'] = '.var_export($GLOBALS['config']['ENABLE_RSS_PERMALINKS'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_UPDATECHECK\'] = '.var_export($GLOBALS['config']['ENABLE_UPDATECHECK'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_MARKDOWN\'] = '.var_export($GLOBALS['config']['ENABLE_MARKDOWN'], true).';'."\n";;
+    $config .= '$GLOBALS[\'config\'][\'BAN_AFTER\'] = '.var_export($GLOBALS['config']['BAN_AFTER'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'BAN_DURATION\'] = '.var_export($GLOBALS['config']['BAN_DURATION'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'THEME\'] = '.var_export($GLOBALS['config']['THEME'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'LINKS_PER_PAGE\'] = '.var_export($GLOBALS['config']['LINKS_PER_PAGE'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'HIDE_TIMESTAMPS\'] = '.var_export($GLOBALS['config']['HIDE_TIMESTAMPS'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_THUMBNAILS\'] = '.var_export($GLOBALS['config']['ENABLE_THUMBNAILS'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_FAVICON\'] = '.var_export($GLOBALS['config']['ENABLE_FAVICON'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'ENABLE_LOCALCACHE\'] = '.var_export($GLOBALS['config']['ENABLE_LOCALCACHE'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'externalThumbshot\'] = '.var_export($GLOBALS['config']['externalThumbshot'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'contactLink\'] = '.var_export($GLOBALS['config']['contactLink'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'DATE_FORMAT\'] = '.var_export($GLOBALS['config']['DATE_FORMAT'], true).';'."\n";
+    if (!file_put_contents($GLOBALS['config']['CONFIG_FILE'],$config) || strcmp(file_get_contents($GLOBALS['config']['CONFIG_FILE']),$config)!=0)
+    {
+        echo '<script>alert("Shaarli could not create the config file. Please make sure Shaarli has the right to write in the folder is it installed in.");document.location=\'?\';</script>';
+        exit;
+    }
+}
+
 /* Because some f*cking services like flickr require an extra HTTP request to get the thumbnail URL,
    I have deported the thumbnail URL code generation here, otherwise this would slow down page generation.
    The following function takes the URL a link (eg. a flickr page) and return the proper thumbnail.
