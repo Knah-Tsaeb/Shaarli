@@ -528,7 +528,10 @@ a, .linkdescription a {
 
 #linklist li, #linklist li.private {
   box-sizing: border-box;
-  background: #fff;
+  background-color: #fff;
+  background-image: url('../../images/private_16x16.png');
+  background-repeat: no-repeat;
+  background-position: 10px 10px;
   border: 1px solid #cdcdcd;
   border-radius: .3em;
   flex: 0 0 auto;
