@@ -519,14 +519,18 @@ a, .linkdescription a {
 
 #linklist li, #linklist li.private {
   background-color: #fff;
-  background-image: url('../../images/private_16x16.png');
-  background-repeat: no-repeat;
-  background-position: 10px center;
   border: 1px solid #cdcdcd;
   border-radius: .3em;
   clear: both;
   margin: 1em 0;
-  padding: .3em .3em .3em 32px;
+  padding: .3em;
+}
+
+#linklist li.private {
+  background-image: url('../../images/private_16x16.png');
+  background-repeat: no-repeat;
+  background-position: 10px center;
+    padding: .3em .3em .3em 32px;
 }
 
 #linklist li.publicLinkHightLight {
