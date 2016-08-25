@@ -32,7 +32,7 @@ $GLOBALS['config']['PUBSUBHUB_URL'] = ''; // PubSubHubbub support. Put an empty 
                                           // Note: You must have publisher.php in the same directory as Shaarli index.php
 $GLOBALS['config']['UPDATECHECK_FILENAME'] = $GLOBALS['config']['DATADIR'].'/lastupdatecheck.txt'; // For updates check of Shaarli.
 $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400; // Updates check frequency for Shaarli. 86400 seconds=24 hours
-$GLOBALS['config']['UPDATECHECK_URL'] = 'http://book.knah-tsaeb.org/shaarli_version.txt'; // Define last version of myShaarli
+$GLOBALS['config']['UPDATECHECK_URL'] = 'https://book.knah-tsaeb.org/shaarli_version.txt'; // Define last version of myShaarli
 $GLOBALS['config']['UPDATECHECK_DOWNLOAD'] = 'https://forge.leslibres.org/Knah-Tsaeb/MyShaarli';
 $GLOBALS['config']['ENABLE_UPDATECHECK'] = true;
 $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
@@ -40,6 +40,7 @@ $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // the last param must be a url
 $GLOBALS['config']['ENABLE_MARKDOWN'] = true;
 $GLOBALS['config']['WALLABAG_URL'] = '';
+$GLOBALS['config']['WALLABAG_VERSION'] = ''; // 1 for V1 or 2 for v2
 $GLOBALS['config']['contactLink'] = ''; // Define link for contact Example : http://example.com/contact.php or mailo:contact@example.com
 $GLOBALS['config']['THEME'] = 'myShaarli';
 $GLOBALS['config']['DATE_FORMAT'] = '%A %d %B %Y %T'; // see http://php.net/manual/en/function.strftime.php for more example
@@ -54,7 +55,7 @@ if (is_file($GLOBALS['config']['DATADIR'].'/options.php')) {
     require $GLOBALS['config']['DATADIR'].'/options.php';
 }
 
-define('myShaarli_version', '1.1.4');
+define('myShaarli_version', '1.1.5');
 define('PHPPREFIX', '<?php /* '); // Prefix to encapsulate data in php code.
 define('PHPSUFFIX', ' */ ?>'); // Suffix to encapsulate data in php code.
 // http://server.com/x/shaarli --> /shaarli/
@@ -206,7 +207,7 @@ function checkUpdate()
     if (!is_file($GLOBALS['config']['UPDATECHECK_FILENAME']) || (filemtime($GLOBALS['config']['UPDATECHECK_FILENAME']) < time() - ($GLOBALS['config']['UPDATECHECK_INTERVAL']))) {
         $version = myShaarli_version;
         list($httpstatus, $headers, $data) = getHTTP($GLOBALS['config']['UPDATECHECK_URL'], 2);
-        if (strpos($httpstatus, '200 OK') !== false) {
+        if (strpos($httpstatus, '200 OK') !== false || strpos($httpstatus, '301') !== false) {
             $version = $data;
         }
           // If failed, nevermind. We don't want to bother the user with that.
@@ -223,7 +224,6 @@ function checkUpdate()
     if (version_compare(strtolower(myShaarli_version), strtolower($newestversion)) == -1) {
         return 'New update of myShaarli available.';
     }
-
     return false;
 }
 
@@ -1770,6 +1770,9 @@ function renderPage()
             $GLOBALS['config']['contactLink'] = $_POST['contactLink'];
             $_SESSION['LINKS_PER_PAGE'] = (int) $_POST['linkPerPage'];
             $GLOBALS['config']['DATE_FORMAT'] = strip_tags($_POST['dateFormat']);
+            $GLOBALS['config']['WALLABAG_URL'] = $_POST['wallabagUrl'];
+            $GLOBALS['config']['WALLABAG_VERSION'] = (int)$_POST['wallabagVersion'];
+
             writeConfig();
             echo '<script>alert("Configuration was saved.");document.location=\'?do=configure\';</script>';
             exit;
@@ -2811,7 +2814,10 @@ function writeConfig()
     $config .= '$GLOBALS[\'config\'][\'externalThumbshot\'] = '.var_export($GLOBALS['config']['externalThumbshot'], true).';'."\n";
     $config .= '$GLOBALS[\'config\'][\'contactLink\'] = '.var_export($GLOBALS['config']['contactLink'], true).';'."\n";
     $config .= '$GLOBALS[\'config\'][\'DATE_FORMAT\'] = '.var_export($GLOBALS['config']['DATE_FORMAT'], true).';'."\n";
-    if (!file_put_contents($GLOBALS['config']['CONFIG_FILE'], $config) || strcmp(file_get_contents($GLOBALS['config']['CONFIG_FILE']), $config) != 0) {
+    $config .= '$GLOBALS[\'config\'][\'WALLABAG_URL\'] = '.var_export($GLOBALS['config']['WALLABAG_URL'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'WALLABAG_VERSION\'] = '.var_export($GLOBALS['config']['WALLABAG_VERSION'], true).';'."\n";
+    if (!file_put_contents($GLOBALS['config']['CONFIG_FILE'],$config) || strcmp(file_get_contents($GLOBALS['config']['CONFIG_FILE']),$config)!=0)
+    {
         echo '<script>alert("Shaarli could not create the config file. Please make sure Shaarli has the right to write in the folder is it installed in.");document.location=\'?\';</script>';
         exit;
     }
