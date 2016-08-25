@@ -40,6 +40,7 @@ $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
                                               // the last param must be a url
 $GLOBALS['config']['ENABLE_MARKDOWN'] = TRUE;
 $GLOBALS['config']['WALLABAG_URL'] = '';
+$GLOBALS['config']['WALLABAG_VERSION'] = ''; // 1 for V1 or 2 for v2
 $GLOBALS['config']['contactLink'] = ''; // Define link for contact Example : http://example.com/contact.php or mailo:contact@example.com
 $GLOBALS['config']['THEME'] = 'myShaarli';
 $GLOBALS['config']['DATE_FORMAT'] = '%A %d %B %Y %T'; // see http://php.net/manual/en/function.strftime.php for more example
@@ -1506,6 +1507,9 @@ function renderPage()
             $GLOBALS['config']['contactLink'] = $_POST['contactLink'];
             $_SESSION['LINKS_PER_PAGE'] = (int)$_POST['linkPerPage'];
             $GLOBALS['config']['DATE_FORMAT'] = strip_tags($_POST['dateFormat']);
+            $GLOBALS['config']['WALLABAG_URL'] = $_POST['wallabagUrl'];
+            $GLOBALS['config']['WALLABAG_VERSION'] = (int)$_POST['wallabagVersion'];
+
             writeConfig();
             echo '<script>alert("Configuration was saved.");document.location=\'?do=configure\';</script>';
             exit;
@@ -2465,6 +2469,8 @@ function writeConfig()
     $config .= '$GLOBALS[\'config\'][\'externalThumbshot\'] = '.var_export($GLOBALS['config']['externalThumbshot'], true).';'."\n";
     $config .= '$GLOBALS[\'config\'][\'contactLink\'] = '.var_export($GLOBALS['config']['contactLink'], true).';'."\n";
     $config .= '$GLOBALS[\'config\'][\'DATE_FORMAT\'] = '.var_export($GLOBALS['config']['DATE_FORMAT'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'WALLABAG_URL\'] = '.var_export($GLOBALS['config']['WALLABAG_URL'], true).';'."\n";
+    $config .= '$GLOBALS[\'config\'][\'WALLABAG_VERSION\'] = '.var_export($GLOBALS['config']['WALLABAG_VERSION'], true).';'."\n";
     if (!file_put_contents($GLOBALS['config']['CONFIG_FILE'],$config) || strcmp(file_get_contents($GLOBALS['config']['CONFIG_FILE']),$config)!=0)
     {
         echo '<script>alert("Shaarli could not create the config file. Please make sure Shaarli has the right to write in the folder is it installed in.");document.location=\'?\';</script>';

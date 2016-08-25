@@ -113,6 +113,17 @@
                 <label for="enableFavicon">Enable favicon : </label>
                 <input type="checkbox" name="enableFavicon" id="enableFavicon" {if="!empty($GLOBALS['config']['ENABLE_FAVICON'])"}checked{/if}/>
               </p>
+              <p>
+                  <label for="wallabagUrl">Wallabag URL : </label>
+                  <input type="text" name="wallabagUrl" id="wallabagUrl" value="{$GLOBALS['config']['WALLABAG_URL']}">
+              </p>
+              <p>
+                  <label for="wallabagVersion">Wallabag version : </label>
+                  <select name="wallabagVersion" id="wallabagVersion">
+                      <option {if="$GLOBALS['config']['WALLABAG_VERSION']===1"}selected{/if} value="1">v1</option>
+                      <option {if="$GLOBALS['config']['WALLABAG_VERSION']===2"}selected{/if} value="2">v2</option>
+                  </select>
+              </p>
             </div>
           </li>
         </ul>

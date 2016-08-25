@@ -232,7 +232,7 @@ cursor:pointer;
 .linktitle { font-size:14pt; font-weight:bold; }
 .linktitle a { text-decoration: none; color:#80AD48; }
 .linktitle a:hover { color:#F57900; }
-.linkdate, .linkarchive { font-size:8pt; color:#888; }
+.linkdate, .linkarchive, .linkWallabag { font-size:8pt; color:#888; }
 .linkdate a, .linkarchive a { color:#E28E3F;text-decoration: none;}
 .linkarchive a {background-image:url('../../images/logo_Archive.org.jpg');padding:2px 0 3px 20px;background-repeat:no-repeat;}
 .linkdate a {background-image:url('../../images/calendar.png');padding:2px 0 3px 20px;background-repeat:no-repeat;}
@@ -469,3 +469,15 @@ div.dailyEntryDescription { font-size:10pt; }
 
 /* Highlight search results */
 .highlight { background-color: #FFFF33; }
+
+.linkWallabag a {
+  background-image: url(../../images/logo_wallabag.png);
+  background-repeat: no-repeat;
+}
+
+.linkBottom a {
+  color: #E28E3F;
+  line-height: 1.6em;
+  padding: 2px 0 3px 20px;
+  text-decoration: none;
+}
