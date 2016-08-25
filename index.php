@@ -32,7 +32,7 @@ $GLOBALS['config']['PUBSUBHUB_URL'] = ''; // PubSubHubbub support. Put an empty 
                                           // Note: You must have publisher.php in the same directory as Shaarli index.php
 $GLOBALS['config']['UPDATECHECK_FILENAME'] = $GLOBALS['config']['DATADIR'].'/lastupdatecheck.txt'; // For updates check of Shaarli.
 $GLOBALS['config']['UPDATECHECK_INTERVAL'] = 86400; // Updates check frequency for Shaarli. 86400 seconds=24 hours
-$GLOBALS['config']['UPDATECHECK_URL'] = 'http://book.knah-tsaeb.org/shaarli_version.txt'; // Define last version of myShaarli
+$GLOBALS['config']['UPDATECHECK_URL'] = 'https://book.knah-tsaeb.org/shaarli_version.txt'; // Define last version of myShaarli
 $GLOBALS['config']['UPDATECHECK_DOWNLOAD'] = 'https://forge.leslibres.org/Knah-Tsaeb/MyShaarli';
 $GLOBALS['config']['ENABLE_UPDATECHECK'] = true;
 $GLOBALS['config']['externalThumbshot'] = ''; // Url for external thumbnailer
@@ -55,7 +55,7 @@ if (is_file($GLOBALS['config']['DATADIR'].'/options.php')) {
     require $GLOBALS['config']['DATADIR'].'/options.php';
 }
 
-define('myShaarli_version', '1.1.4');
+define('myShaarli_version', '1.1.5');
 define('PHPPREFIX', '<?php /* '); // Prefix to encapsulate data in php code.
 define('PHPSUFFIX', ' */ ?>'); // Suffix to encapsulate data in php code.
 // http://server.com/x/shaarli --> /shaarli/
@@ -207,7 +207,7 @@ function checkUpdate()
     if (!is_file($GLOBALS['config']['UPDATECHECK_FILENAME']) || (filemtime($GLOBALS['config']['UPDATECHECK_FILENAME']) < time() - ($GLOBALS['config']['UPDATECHECK_INTERVAL']))) {
         $version = myShaarli_version;
         list($httpstatus, $headers, $data) = getHTTP($GLOBALS['config']['UPDATECHECK_URL'], 2);
-        if (strpos($httpstatus, '200 OK') !== false) {
+        if (strpos($httpstatus, '200 OK') !== false || strpos($httpstatus, '301') !== false) {
             $version = $data;
         }
           // If failed, nevermind. We don't want to bother the user with that.
@@ -224,7 +224,6 @@ function checkUpdate()
     if (version_compare(strtolower(myShaarli_version), strtolower($newestversion)) == -1) {
         return 'New update of myShaarli available.';
     }
-
     return false;
 }
 
