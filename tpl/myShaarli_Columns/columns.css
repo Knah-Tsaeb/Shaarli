@@ -528,7 +528,7 @@ a, .linkdescription a {
 
 #linklist li, #linklist li.private {
   box-sizing: border-box;
-  background: #fff;
+  background-color: #fff;
   border: 1px solid #cdcdcd;
   border-radius: .3em;
   flex: 0 0 auto;
@@ -536,6 +536,12 @@ a, .linkdescription a {
   padding: .3em;
   position: relative;
   width: calc(25% - .6em);
+}
+
+#linklist li.private {
+  background-image: url('../../images/private_16x16.png');
+  background-repeat: no-repeat;
+  background-position: 10px 10px;
 }
 
 #linklist li.publicLinkHightLight {
